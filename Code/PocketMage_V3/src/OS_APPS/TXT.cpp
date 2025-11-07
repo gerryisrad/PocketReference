@@ -5,8 +5,9 @@
 //       888         .8PY888.         888       //
 //       888        d8'  `888b        888       //
 //      o888o     o888o  o88888o     o888o      //
-#include <globals.h>
 
+#include <globals.h>
+#if !OTA_APP // POCKETMAGE_OS
 enum TXTState { TXT_, WIZ0, WIZ1, WIZ2, WIZ3, FONT };
 TXTState CurrentTXTState = TXT_;
 
@@ -626,3 +627,4 @@ void einkHandler_TXT_OLD() {
     newLineAdded = false;
   }
 }
+#endif

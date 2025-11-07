@@ -1,5 +1,6 @@
-#include <globals.h>
 
+#include <globals.h>
+#if !OTA_APP // POCKETMAGE_OS
 enum JournalState {J_MENU, J_TXT};
 JournalState CurrentJournalState = J_MENU;
 
@@ -474,3 +475,4 @@ void einkHandler_JOURNAL() {
       break;
   } 
 }
+#endif

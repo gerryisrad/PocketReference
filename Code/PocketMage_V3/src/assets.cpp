@@ -1,3 +1,4 @@
+#if !OTA_APP // POCKETMAGE_OS
 #include <assets.h>
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -17624,3 +17625,4 @@ const unsigned char* run_right_allArray[7] = {
 	_run_right5,
 	_run_right6
 };
+#endif

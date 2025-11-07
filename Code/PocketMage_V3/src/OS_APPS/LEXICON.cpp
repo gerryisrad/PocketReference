@@ -1,5 +1,6 @@
-#include <globals.h>
 
+#include <globals.h>
+#if !OTA_APP // POCKETMAGE_OS
 enum LexState {MENU, DEF};
 LexState CurrentLexState = MENU;
 
@@ -257,5 +258,4 @@ void einkHandler_LEXICON() {
   }
   
 }
-
-
+#endif

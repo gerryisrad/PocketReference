@@ -7,7 +7,7 @@
 //      o888o     o888o  o88888o     o888o      //
 
 #include <globals.h>
-
+#if !OTA_APP // POCKETMAGE_OS
 // Font includes
 // Mono
 #include <Fonts/FreeMono9pt7b.h>
@@ -1886,3 +1886,4 @@ void processKB_TXT_NEW() {
       break;
   }
 }
+#endif

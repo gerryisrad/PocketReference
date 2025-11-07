@@ -5,8 +5,9 @@
 //   888    "     888   888          888    "        `888.8'  `888.8'      888     .888P       //
 //   888          888   888       o  888       o      `888'    `888'       888    d888'    .P  //
 //  o888o        o888o o888ooooood8 o888ooooood8       `8'      `8'       o888o .8888888888P   //
-#include <globals.h>
 
+#include <globals.h>
+#if !OTA_APP // POCKETMAGE_OS
 
 enum FileWizState { WIZ0_, WIZ1_, WIZ1_YN, WIZ2_R, WIZ2_C, WIZ3_ };
 FileWizState CurrentFileWizState = WIZ0_;
@@ -654,3 +655,4 @@ void einkHandler_FILEWIZ() {
       break;
   }
 }
+#endif

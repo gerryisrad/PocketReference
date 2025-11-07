@@ -5,10 +5,11 @@
 //      888        .88ooo8888.        `"Y88b  888`88b.         `"Y88b //
 //      888       .8'     `888.  oo     .d8P  888  `88b.  oo     .d8P //
 //     o888o     o88o     o8888o 8""88888P'  o888o  o888o 8""88888P'  //  
+
 #include <globals.h>
 #include "esp32-hal-log.h"
 #include "esp_log.h"
-
+#if !OTA_APP // POCKETMAGE_OS
 enum TasksState { TASKS0, TASKS0_NEWTASK, TASKS1, TASKS1_EDITTASK };
 TasksState CurrentTasksState = TASKS0;
 
@@ -406,3 +407,4 @@ void einkHandler_TASKS() {
     
   }
 }
+#endif

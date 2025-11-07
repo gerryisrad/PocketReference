@@ -17,11 +17,11 @@ static constexpr const char* TAG = "MAIN"; // TODO: Come up with a better tag
 // ADD E-INK HANDLER APP SCRIPTS HERE
 void applicationEinkHandler() {
   if (OTA_APP) {
-    ESP_LOGD(TAG, "OTA APP MODE - SKIPPING EINK HANDLER\n");
-    einkHandler_APP();
+    einkHandler_APP(); // OTA_APP: entry point
     return;
   }
   // OTA_APP: Remove switch statement
+  #if !OTA_APP // POCKETMAGE_OS
   switch (CurrentAppState) {
     case HOME:
       einkHandler_HOME();
@@ -58,6 +58,7 @@ void applicationEinkHandler() {
       einkHandler_HOME();
       break;
   }
+  #endif // POCKETMAGE_OS
 }
 
 // ADD PROCESS/KEYBOARD APP SCRIPTS HERE
@@ -80,15 +81,23 @@ void processKB() {
     if (x > u8g2.getDisplayWidth()) {
       // Return to pocketMage OS
       rebootToPocketMage();
+      // OTA_APP: reboot method that sets reboot flag instead of direct reboot
+      // pocketmage::checkRebootOTA();   // alternative method for testing OTA_APP rebooting
+      // prefs.begin("PocketMage", false);
+      // prefs.putBool("OTA_Reboot", true);
+      // prefs.end();
+      // pocketmage::deepSleep();
     }
 
     u8g2.sendBuffer();
     delay(10);
-
-    //processKB_APP();
+    #if OTA_APP
+    processKB_APP(); // OTA_APP: entry point
+    #endif
     return;
   }
   // OTA_APP: Remove switch statement
+  #if !OTA_APP // POCKETMAGE_OS
   switch (CurrentAppState) {
     case HOME:
       processKB_HOME();
@@ -125,6 +134,7 @@ void processKB() {
       processKB_HOME();
       break;
   }
+  #endif // POCKETMAGE_OS
 }
 
 //  ooo        ooooo       .o.       ooooo ooooo      ooo  //

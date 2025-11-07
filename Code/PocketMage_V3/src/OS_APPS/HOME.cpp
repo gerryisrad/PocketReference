@@ -5,11 +5,12 @@
 //   888     888  888      888  8  `888'   888   888    "     //
 //   888     888  `88b    d88'  8    Y     888   888       o  //
 //  o888o   o888o  `Y8bood8P'  o8o        o888o o888ooooood8  //
+
 #include <globals.h>
 #include "esp_log.h"
 
 #define IDLE_TIME 20000 // time to wait for idle (ms)
-
+#if !OTA_APP // POCKETMAGE_OS
 static String currentLine = "";
 static bool resetIdleAnim = false; 
 static int prevTime = 0;
@@ -485,3 +486,4 @@ void einkHandler_HOME() {
       break;
   }
 }
+#endif

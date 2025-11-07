@@ -1,3 +1,4 @@
+
 #include <globals.h>
 #include <ESP32-targz.h>
 #include <Update.h>
@@ -7,7 +8,7 @@
 #define APP_DIRECTORY   "/apps"
 #define TEMP_DIR        "/apps/temp"
 #define PREFS_NAMESPACE "AppLoader"
-
+#if !OTA_APP // POCKETMAGE_OS
 static String currentLine = "";
 
 enum AppLoaderState {MENU, SWAP_OR_EDIT, INSTALLING, SWAP};
@@ -631,3 +632,4 @@ void einkHandler_APPLOADER() {
       break;
   }
 }
+#endif

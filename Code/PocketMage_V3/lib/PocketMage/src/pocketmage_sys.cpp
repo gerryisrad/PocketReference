@@ -73,6 +73,12 @@ namespace pocketmage {
     }
 
     void deepSleep(bool alternateScreenSaver) {
+        
+        // user skipped reboot flag if true, return to OS normally
+        if (!pocketmage::setRebootFlagOTA()) {
+            return;
+        }
+
         // Put OLED to sleep
         u8g2.setPowerSave(1);
 
@@ -156,13 +162,64 @@ namespace pocketmage {
         // Sleep the ESP32
         esp_deep_sleep_start();
     }
-        
+
+    // returns true if reboot flag set, false if skipped by user
+    bool setRebootFlagOTA() {
+        if (OTA_APP){
+                ESP_LOGI(TAG, "Entering OTA reboot mode");
+                OLED().oledWord("WARNING: Rebooting to PocketMage OS!");
+                PWR_BTN_event = false;
+                int i = millis();
+                int j = millis();
+                while ((j - i) <= 3000) {  // 3 sec
+                    // exit immediately if power button pressed again
+                    if (PWR_BTN_event || !disableTimeout){
+                        PWR_BTN_event = false;
+                        break;
+                    }
+                    j = millis();
+                    if (digitalRead(KB_IRQ) == 0) {
+                    OLED().oledWord("Good Save!");
+                    delay(500);
+                    CLOCK().setPrevTimeMillis(millis());
+                    keypad.flush();
+                    return false;
+                    }
+                }
+                // timed out of loop, set reboot flag
+                prefs.begin("PocketMage", false);
+                prefs.putBool("OTA_Reboot", true);
+                prefs.end();
+                return true;
+            }
+            // PocketMage OS, no reboot flag needed
+            ESP_LOGV(TAG, "Running in PocketMage OS, no reboot needed");
+            return true;
+        }   
+    
+    // checks if reboot flag is set, clears flag and reboots to PocketMage OS
+    void checkRebootOTA() {
+        if (OTA_APP){
+            ESP_LOGD(TAG, "Checking OTA reboot flag");
+            prefs.begin("PocketMage", false);
+            if (prefs.getBool("OTA_Reboot", false) == true){
+                prefs.putBool("OTA_Reboot", false);
+                prefs.end();
+                rebootToPocketMage();
+            }
+            prefs.end();
+        }
+    }
+    
     void IRAM_ATTR PWR_BTN_irq() {
         PWR_BTN_event = true;
     }
 }
 
 void PocketMage_INIT(){
+  // CHECK OTA REBOOT
+  pocketmage::checkRebootOTA();
+
   // Serial, I2C, SPI
   Serial.begin(115200);
   Wire.begin(I2C_SDA, I2C_SCL);

@@ -7,7 +7,7 @@ Preferences prefs;                       // NVS preferences // note add power bu
 int OLEDFPSMillis = 0;                   // Last OLED FPS update time
 int KBBounceMillis = 0;                  // Last keyboard debounce time
 volatile bool newState = false;          // App state changed
-volatile bool disableTimeout = false;    // Disable timeout globally 
+volatile bool disableTimeout = OTA_APP ? true: false;    // Disable timeout globally, OTA_APP: disable timeout by default
 bool fileLoaded = false;    
 unsigned int flashMillis = 0;            // Flash timing
 
@@ -29,7 +29,9 @@ int OLED_MAX_FPS;                        // OLED max FPS
 
 // ===================== APP STATES =====================
 const String appStateNames[] = { "txt", "filewiz", "usb", "bt", "settings", "tasks", "calendar", "journal", "lexicon", "script" , "loader" }; // App state names
+#if !OTA_APP // POCKETMAGE_OS
 const unsigned char *appIcons[11] = { _homeIcons2, _homeIcons3, _homeIcons4, _homeIcons5, _homeIcons6, taskIconTasks0, _homeIcons7, _homeIcons8, _homeIcons9, _homeIcons11, _homeIcons10}; // App icons
+#endif
 AppState CurrentAppState;                // Current app state
 
 // ===================== TASKS APP =====================

@@ -28,64 +28,61 @@ void checkTimeout() {
     // Trigger timeout deep sleep
     if (!disableTimeout) {
         if (CLOCK().getTimeDiff() >= TIMEOUT * 1000) {
-        ESP_LOGW(TAG, "Device idle... Deep sleeping");
+            ESP_LOGW(TAG, "Device idle... Deep sleeping");
 
-        // Give a chance to keep device awake
-        OLED().oledWord("  Going to sleep!  ");
-        int i = millis();
-        int j = millis();
-        while ((j - i) <= 4000) {  // 4 sec
-            j = millis();
-            if (digitalRead(KB_IRQ) == 0) {
-            OLED().oledWord("Good Save!");
-            delay(500);
-            CLOCK().setPrevTimeMillis(millis());
-            keypad.flush();
-            return;
+            // Give a chance to keep device awake
+            OLED().oledWord("  Going to sleep!  ");
+            int i = millis();
+            int j = millis();
+            while ((j - i) <= 4000) {  // 4 sec
+                j = millis();
+                if (digitalRead(KB_IRQ) == 0) {
+                OLED().oledWord("Good Save!");
+                delay(500);
+                CLOCK().setPrevTimeMillis(millis());
+                keypad.flush();
+                return;
+                }
             }
-        }
-        // OTA_APP: Remove saveEditingFile
-        // Save current work
-        saveEditingFile();
+            // OTA_APP: Remove saveEditingFile
+            // Save current work
+            #if !OTA_APP
+            saveEditingFile();
+            #endif
 
-        switch (CurrentAppState) {
-            case TXT:
-            if (SLEEPMODE == "TEXT" && SD().getEditingFile() != "") {
-                /*
-                EINK().setFullRefreshAfter(FULL_REFRESH_AFTER + 1);
-                display.setFullWindow();
-                EINK().einkTextDynamic(true, true);
+            switch (CurrentAppState) {
+                // OTA_APP skip TXT case
+                #if !OTA_APP
+                case TXT:
+                if (SLEEPMODE == "TEXT" && SD().getEditingFile() != "" && !OTA_APP) {
+                    /*
+                    EINK().setFullRefreshAfter(FULL_REFRESH_AFTER + 1);
+                    display.setFullWindow();
+                    EINK().einkTextDynamic(true, true);
 
-                display.setFont(&FreeMonoBold9pt7b);
+                    display.setFont(&FreeMonoBold9pt7b);
 
-                display.fillRect(0, display.height() - 26, display.width(), 26, GxEPD_WHITE);
-                display.drawRect(0, display.height() - 20, display.width(), 20, GxEPD_BLACK);
-                display.setCursor(4, display.height() - 6);
-                //display.drawBitmap(display.width() - 30, display.height() - 20, KBStatusallArray[6], 30,
-                //                20, GxEPD_BLACK);
-                EINK().statusBar(editingFile, true);
+                    display.fillRect(0, display.height() - 26, display.width(), 26, GxEPD_WHITE);
+                    display.drawRect(0, display.height() - 20, display.width(), 20, GxEPD_BLACK);
+                    display.setCursor(4, display.height() - 6);
+                    //display.drawBitmap(display.width() - 30, display.height() - 20, KBStatusallArray[6], 30,
+                    //                20, GxEPD_BLACK);
+                    EINK().statusBar(editingFile, true);
 
-                display.fillRect(320 - 86, 240 - 52, 87, 52, GxEPD_WHITE);
-                display.drawBitmap(320 - 86, 240 - 52, sleep1, 87, 52, GxEPD_BLACK);
+                    display.fillRect(320 - 86, 240 - 52, 87, 52, GxEPD_WHITE);
+                    display.drawBitmap(320 - 86, 240 - 52, sleep1, 87, 52, GxEPD_BLACK);
 
-                // Put device to sleep with alternate sleep screen
-                */
-                pocketmage::deepSleep(true);
-            } else
-                pocketmage::deepSleep();
-            break;
-
-            default:
-            pocketmage::deepSleep();
-            break;
-        }
-
-        display.nextPage();
-        display.hibernate();
-
-        // Sleep the device
-        BZ().playJingle(Jingles::Shutdown);
-        esp_deep_sleep_start();
+                    // Put device to sleep with alternate sleep screen
+                    */
+                    pocketmage::deepSleep(true);
+                } else
+                    pocketmage::deepSleep();
+                break;
+                #endif
+                default:
+                    pocketmage::deepSleep();
+                break;
+            }
         }
     } else {
         CLOCK().setPrevTimeMillis(millis());
@@ -97,9 +94,11 @@ void checkTimeout() {
 
         // OTA_APP: Remove saveEditingFile
         // Save current work
+        #if !OTA_APP
         saveEditingFile();
+        #endif
 
-        if (digitalRead(CHRG_SENS) == HIGH) {
+        if (digitalRead(CHRG_SENS) == HIGH && !OTA_APP) {
         // Save last state
 
         prefs.begin("PocketMage", false);
@@ -109,8 +108,11 @@ void checkTimeout() {
 
         CurrentAppState = HOME;
         CurrentHOMEState = NOWLATER;
+        //OTA_APP: remove updateTaskArray and sortTasksByDueDate
+        #if !OTA_APP
         updateTaskArray();
         sortTasksByDueDate(tasks);
+        #endif
         OLED().setPowerSave(true);
         disableTimeout = true;
         newState = true;
@@ -123,34 +125,35 @@ void checkTimeout() {
         display.fillScreen(GxEPD_WHITE);
 
         } else {
-        switch (CurrentAppState) {
-            case TXT:
-            if (SLEEPMODE == "TEXT" && SD().getEditingFile() != "") {
-                EINK().setFullRefreshAfter(FULL_REFRESH_AFTER + 1);
-                display.setFullWindow();
-                EINK().einkTextDynamic(true, true);
-                display.setFont(&FreeMonoBold9pt7b);
+            switch (CurrentAppState) {
+                // OTA_APP skip TXT case
+                case TXT:
+                if (SLEEPMODE == "TEXT" && SD().getEditingFile() != "" && !OTA_APP) {
+                    EINK().setFullRefreshAfter(FULL_REFRESH_AFTER + 1);
+                    display.setFullWindow();
+                    EINK().einkTextDynamic(true, true);
+                    display.setFont(&FreeMonoBold9pt7b);
 
-                display.fillRect(0, display.height() - 26, display.width(), 26, GxEPD_WHITE);
-                display.drawRect(0, display.height() - 20, display.width(), 20, GxEPD_BLACK);
-                display.setCursor(4, display.height() - 6);
-                //display.drawBitmap(display.width() - 30, display.height() - 20, KBStatusallArray[6], 30,
-                //                20, GxEPD_BLACK);
-                EINK().statusBar(SD().getEditingFile(), true);
+                    display.fillRect(0, display.height() - 26, display.width(), 26, GxEPD_WHITE);
+                    display.drawRect(0, display.height() - 20, display.width(), 20, GxEPD_BLACK);
+                    display.setCursor(4, display.height() - 6);
+                    //display.drawBitmap(display.width() - 30, display.height() - 20, KBStatusallArray[6], 30,
+                    //                20, GxEPD_BLACK);
+                    EINK().statusBar(SD().getEditingFile(), true);
 
-                display.fillRect(320 - 86, 240 - 52, 87, 52, GxEPD_WHITE);
-                display.drawBitmap(320 - 86, 240 - 52, sleep1, 87, 52, GxEPD_BLACK);
+                    display.fillRect(320 - 86, 240 - 52, 87, 52, GxEPD_WHITE);
+                    display.drawBitmap(320 - 86, 240 - 52, sleep1, 87, 52, GxEPD_BLACK);
 
-                pocketmage::deepSleep(true);
+                    pocketmage::deepSleep(true);
+                }
+                // Sleep device normally
+                else
+                    pocketmage::deepSleep();
+                break;
+                default:
+                    pocketmage::deepSleep();
+                break;
             }
-            // Sleep device normally
-            else
-                pocketmage::deepSleep();
-            break;
-            default:
-            pocketmage::deepSleep();
-            break;
-        }
         }
 
     } else if (PWR_BTN_event && CurrentHOMEState == NOWLATER) {
@@ -202,14 +205,15 @@ void loadState(bool changeState) {
         prefs.end();
         return;
     }
-    // OTA_APP: removed if statement
-    // Update State (if needed)
-    if (!OTA_APP) {
-        u8g2.setContrast(OLED_BRIGHTNESS);
 
-        if (HOME_ON_BOOT)
+    u8g2.setContrast(OLED_BRIGHTNESS);
+
+    // OTA_APP: remove if statement
+    // Update State (if needed)
+    #if !OTA_APP // POCKETMAGE_OS
+    if (HOME_ON_BOOT) {
         CurrentAppState = HOME;
-        else
+    } else {
         CurrentAppState = static_cast<AppState>(prefs.getInt("CurrentAppState", HOME));
 
         keypad.flush();
@@ -243,7 +247,7 @@ void loadState(bool changeState) {
             break;
         }
     }
-
+    #endif // POCKETMAGE_OS
     prefs.end();
 }
 
@@ -276,9 +280,10 @@ void updateBattState() {
                 delay(1000);
 
                 // OTA_APP: Remove saveEditingFile
+                #if !OTA_APP
                 // Save current work
                 saveEditingFile();
-
+                #endif
                 // Put device to sleep
                 pocketmage::deepSleep(false);
             }
@@ -308,6 +313,7 @@ void updateBattState() {
 }
 
 // OTA_APP: Remove definition of saveEditingFile
+#if !OTA_APP
 void saveEditingFile() {
     if (!OTA_APP){
         OLED().oledWord("Saving Work");
@@ -319,3 +325,4 @@ void saveEditingFile() {
         }
     } 
 }
+#endif

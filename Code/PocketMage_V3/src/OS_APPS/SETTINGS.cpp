@@ -1,5 +1,6 @@
-#include <globals.h>
 
+#include <globals.h>
+#if !OTA_APP // POCKETMAGE_OS
 enum SettingsState { settings0, settings1 };
 SettingsState CurrentSettingsState = settings0;
 
@@ -328,3 +329,4 @@ void einkHandler_settings() {
     EINK().multiPassRefresh(2);
   }
 }
+#endif

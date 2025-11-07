@@ -24,6 +24,8 @@ extern bool rebootToPocketMage();
 namespace pocketmage{
   void setCpuSpeed(int newFreq);
   void deepSleep(bool alternateScreenSaver = false);
+  bool setRebootFlagOTA();
+  void checkRebootOTA();
   void IRAM_ATTR PWR_BTN_irq();
 }
 

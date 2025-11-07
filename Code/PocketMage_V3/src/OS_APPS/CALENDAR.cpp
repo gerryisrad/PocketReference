@@ -1,5 +1,6 @@
-#include <globals.h>
 
+#include <globals.h>
+#if !OTA_APP // POCKETMAGE_OS
 static constexpr const char* TAG = "CALENDAR"; // Tag for all calls to ESP_LOG
 
 enum CalendarState { WEEK, MONTH, NEW_EVENT, VIEW_EVENT, SUN, MON, TUE, WED, THU, FRI, SAT };
@@ -1718,3 +1719,4 @@ void einkHandler_CALENDAR() {
       break;
   }
 }
+#endif

@@ -7,7 +7,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <pocketmage.h>
-// OTA_APP: remove assets.h + assets.cpp, and OS_APPS, follow OTA_APP: tag instructions in codebase
+// OTA_APP: remove assets.h + assets.cpp, and OS_APPS/, follow OTA_APP: tag instructions in codebase
 #include <assets.h> // OTA_APP: remove
 
 
@@ -53,8 +53,9 @@ void printDebug();
 void checkTimeout();
 void loadState(bool changeState = true);
 void updateBattState();
+#if !OTA_APP
 void saveEditingFile(); // OTA_APP: Remove saveEditingFile
-
+#endif
 // <PocketMage>
 void einkHandler(void *parameter);
 void applicationEinkHandler();
@@ -62,6 +63,7 @@ void processKB();
 
 
 // OTA_APP: Remove all pocketmage v3 prototypes below this line
+#if !OTA_APP // POCKETMAGE_OS
 // <FILEWIZ.cpp>
 void FILEWIZ_INIT();
 void processKB_FILEWIZ();
@@ -120,5 +122,5 @@ void processKB_APPLOADER();
 void einkHandler_APPLOADER();
 void rebootToAppSlot(int otaIndex);
 void loadAndDrawAppIcon(int x, int y, int otaIndex, bool showName = true, int maxNameChars = 10);
-
+#endif // POCKETMAGE_OS
 #endif // GLOBALS_H

@@ -24,6 +24,7 @@ public:
 
   DateTime nowDT()                                         { return rtc_.now(); }
   RTC_PCF8563& getRTC()                                          { return rtc_; }
+  // To Do: create a task on core 1 that checks for timeout and sets a flag for OS
   long getTimeDiff()                { return timeoutMillis_ - prevTimeMillis_; }
   volatile long getTimeoutMillis() const                    { return timeoutMillis_; }
   void setTimeoutMillis(long t)                            { timeoutMillis_ = t;  }

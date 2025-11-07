@@ -1,3 +1,4 @@
+#if !OTA_APP // POCKETMAGE_OS
 #ifndef ASSETS_H
 #define ASSETS_H
 
@@ -172,4 +173,5 @@ extern const unsigned char _mage_run_right5[] PROGMEM;
 extern const unsigned char _mage_run_right6[] PROGMEM;
 extern const unsigned char* run_right_allArray[7];
 
+#endif // POCKETMAGE_OS
 #endif
