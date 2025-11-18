@@ -79,53 +79,6 @@ jobs:
           
           echo "Flash parameters: mode=$FLASH_MODE freq=$FLASH_FREQ size=$FLASH_SIZE"
 
-      - name: Create merged-firmware.bin
-        id: merge
-        run: |
-          set -euo pipefail
-          BUILD_DIR=".pio/build/PM_V3"
-          cd "$BUILD_DIR"
-          
-          # Verify required files
-          for file in bootloader.bin partitions.bin firmware.bin; do
-            if [ ! -f "$file" ]; then
-              echo "ERROR: Missing required file: $file"
-              ls -lh .
-              exit 1
-            fi
-          done
-          
-          echo "All required binaries present:"
-          ls -lh bootloader.bin partitions.bin firmware.bin
-          
-          # Create merged binary with offsets from partition table
-          esptool.py --chip esp32-s3 merge_bin \
-            --flash_mode ${{ steps.flash_params.outputs.flash_mode }} \
-            --flash_freq ${{ steps.flash_params.outputs.flash_freq }} \
-            --flash_size ${{ steps.flash_params.outputs.flash_size }} \
-            ${{ steps.offsets.outputs.bootloader_offset }} bootloader.bin \
-            ${{ steps.offsets.outputs.partitions_offset }} partitions.bin \
-            ${{ steps.offsets.outputs.app0_offset }} firmware.bin \
-            -o merged-firmware.bin
-          
-          if [ ! -f merged-firmware.bin ]; then
-            echo "ERROR: Failed to create merged-firmware.bin"
-            exit 1
-          fi
-          
-          echo "Successfully created merged-firmware.bin:"
-          ls -lh merged-firmware.bin
-          
-          # Verify the merged binary is reasonable size
-          SIZE=$(stat -f%z merged-firmware.bin 2>/dev/null || stat -c%s merged-firmware.bin)
-          if [ "$SIZE" -lt 100000 ]; then
-            echo "ERROR: merged-firmware.bin is suspiciously small ($SIZE bytes)"
-            exit 1
-          fi
-          
-          echo "Merged binary size: $SIZE bytes"
-          cd - >/dev/null
-
       - name: Prepare firmware manifests
         run: |
           set -euo pipefail
@@ -140,19 +93,28 @@ jobs:
           TARGET_DIR="$GITHUB_WORKSPACE/docs/firmware/${RELEASE_TAG}"
           mkdir -p "${TARGET_DIR}"
           
-          # Copy firmware files
-          cp "${BUILD_DIR}/merged-firmware.bin" "${TARGET_DIR}/merged-firmware.bin"
+          # Copy only the application firmware file
           cp "${BUILD_DIR}/firmware.bin" "${TARGET_DIR}/firmware.bin"
           
-          echo "Firmware files copied to ${TARGET_DIR}"
+          echo "Firmware file copied to ${TARGET_DIR}"
           
-          # Convert hex offset to decimal for JSON
-          APP0_OFFSET="${{ steps.offsets.outputs.app0_offset }}"
-          APP0_OFFSET_DEC=$((APP0_OFFSET))
+          # Get partition offsets
+          BOOTLOADER_OFFSET="0x0"
+          PARTITIONS_OFFSET="${{ steps.offsets.outputs.partitions_offset }}"
+          APP0_OFFSET_HEX="${{ steps.offsets.outputs.app0_offset }}"
           
-          # Full installation manifest (includes bootloader + partitions)
+          # Convert hex offsets to decimal for JSON
+          PARTITIONS_OFFSET_DEC=$((16#${PARTITIONS_OFFSET#0x}))
+          APP0_OFFSET_DEC=$((16#${APP0_OFFSET_HEX#0x}))
+          
+          echo "Offsets: Bootloader=${BOOTLOADER_OFFSET}, Partitions=${PARTITIONS_OFFSET} (${PARTITIONS_OFFSET_DEC}), App=${APP0_OFFSET_HEX} (${APP0_OFFSET_DEC})"
+
+          # Full installation manifest (flashes bootloader, partition table, and app)
+          # This will erase the entire device.
           jq -n \
             --arg ver "$RELEASE_TAG" \
+            --argjson part_off "$PARTITIONS_OFFSET_DEC" \
+            --argjson app_off "$APP0_OFFSET_DEC" \
             '{
               name: "PocketMage Full Install",
               version: $ver,
@@ -160,17 +122,31 @@ jobs:
               new_install_prompt_erase: true,
               builds: [{
                 chipFamily: "ESP32-S3",
-                parts: [{
-                  path: "merged-firmware.bin",
-                  offset: 0
-                }]
+                parts: [
+                  {
+                    path: "bootloader.bin",
+                    offset: 0
+                  },
+                  {
+                    path: "partitions.bin",
+                    offset: $part_off
+                  },
+                  {
+                    path: "firmware.bin",
+                    offset: $app_off
+                  }
+                ]
               }]
             }' > "${TARGET_DIR}/manifest.json"
           
-          # Update-only manifest (app partition only, preserves NVS/SPIFFS)
+          # Copy bootloader and partitions for the full install manifest
+          cp "${BUILD_DIR}/bootloader.bin" "${TARGET_DIR}/bootloader.bin"
+          cp "${BUILD_DIR}/partitions.bin" "${TARGET_DIR}/partitions.bin"
+          
+          # Update-only manifest (flashes only the app partition, preserving data)
           jq -n \
             --arg ver "$RELEASE_TAG" \
-            --argjson offset "$APP0_OFFSET_DEC" \
+            --argjson app_off "$APP0_OFFSET_DEC" \
             '{
               name: "PocketMage Update (Preserve Data)",
               version: $ver,
@@ -180,13 +156,12 @@ jobs:
                 chipFamily: "ESP32-S3",
                 parts: [{
                   path: "firmware.bin",
-                  offset: $offset
+                  offset: $app_off
                 }]
               }]
             }' > "${TARGET_DIR}/manifest_no_erase.json"
           
           echo "Created manifest files for version: $RELEASE_TAG"
-          echo "App partition offset: $APP0_OFFSET ($APP0_OFFSET_DEC decimal)"
           
           # Update or create version index
           INDEX_FILE="$GITHUB_WORKSPACE/docs/manifest-index.json"
