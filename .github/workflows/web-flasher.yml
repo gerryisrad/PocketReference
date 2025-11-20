@@ -1,4 +1,4 @@
-name: Creare et Publicare Web Flasher
+name: Creare et Publicare Inscriptorem per Rete
 
 on:
   push:
@@ -181,6 +181,22 @@ jobs:
           fi
 
           echo "Updated manifest-index.json with version: $RELEASE_TAG"
+
+      - name: Write deploy-info for Pages
+        run: |
+          set -euo pipefail
+          mkdir -p "$GITHUB_WORKSPACE/docs"
+          cat > "$GITHUB_WORKSPACE/docs/deploy-info.json" <<'EOF'
+          {
+            "release_tag": "${RELEASE_TAG}",
+            "run_id": "${GITHUB_RUN_ID}",
+            "run_number": "${GITHUB_RUN_NUMBER}",
+            "sha": "${GITHUB_SHA}",
+            "timestamp": "$(date --utc +%Y-%m-%dT%H:%M:%SZ)"
+          }
+          EOF
+          echo "Wrote deploy-info.json:"
+          cat "$GITHUB_WORKSPACE/docs/deploy-info.json"
 
       - name: Copy the Web Flasher Shrine (interface)
         run: |
