@@ -116,7 +116,7 @@ jobs:
           cp "${BUILD_DIR}/bootloader.bin" "${TARGET_DIR}/bootloader.bin"
           cp "${BUILD_DIR}/partitions.bin" "${TARGET_DIR}/partitions.bin"
 
-          echo "Firmware files copied to ${TARGET_DIR}"
+          echo "Created firmware package for version: $RELEASE_TAG"
 
           # Get partition offsets from previous step
           PARTITIONS_OFFSET="${{ steps.offsets.outputs.partitions_offset }}"
@@ -125,13 +125,10 @@ jobs:
           # Convert hex (0x...) or decimal to decimal using bash arithmetic expansion
           to_decimal() {
             local v="$1"
-            # strip whitespace
             v=$(echo "$v" | tr -d '[:space:]')
             if [[ "$v" =~ ^0x ]] || [[ "$v" =~ ^0X ]]; then
-              # arithmetic expansion handles 0x### format
               echo $((v))
             else
-              # if it's already decimal or empty, echo as-is (ensure numeric)
               if [[ -z "$v" ]]; then
                 echo 0
               else
@@ -142,8 +139,6 @@ jobs:
 
           PARTITIONS_OFFSET_DEC=$(to_decimal "$PARTITIONS_OFFSET")
           APP0_OFFSET_DEC=$(to_decimal "$APP0_OFFSET_HEX")
-
-          echo "Offsets: Partitions=${PARTITIONS_OFFSET} (${PARTITIONS_OFFSET_DEC}), App=${APP0_OFFSET_HEX} (${APP0_OFFSET_DEC})"
 
           # Create a single manifest with all parts
           jq -n \
@@ -174,15 +169,12 @@ jobs:
               }]
             }' > "${TARGET_DIR}/manifest.json"
 
-          echo "Created manifest file for version: $RELEASE_TAG"
-
-          # Ensure docs folder exists (important)
+          # Ensure docs folder exists
           mkdir -p "$GITHUB_WORKSPACE/docs"
 
           # Update or create version index
           INDEX_FILE="$GITHUB_WORKSPACE/docs/manifest-index.json"
           if [ -f "${INDEX_FILE}" ]; then
-            # Prepend new version and remove duplicates while preserving first occurrence (so newest is first)
             jq --arg v "$RELEASE_TAG" '
               def uniq_preserve: reduce .[] as $i ([]; if index($i)==null then . + [$i] else . end);
               ([$v] + (.versions // [])) | uniq_preserve | {versions: .}
@@ -191,10 +183,6 @@ jobs:
           else
             jq -n --arg v "$RELEASE_TAG" '{versions: [$v]}' > "${INDEX_FILE}"
           fi
-
-          echo "Updated manifest-index.json with version: $RELEASE_TAG"
-          echo "manifest-index.json content:"
-          cat "$INDEX_FILE"
 
       - name: Write the Deploy Info Scroll
         run: |
@@ -212,108 +200,69 @@ jobs:
             '{release_tag: $release_tag, run_id: $run_id, run_number: $run_number, sha: $sha, timestamp: $timestamp}' \
             > "$GITHUB_WORKSPACE/docs/deploy-info.json"
 
-          echo "Wrote deploy-info.json:"
-          cat "$GITHUB_WORKSPACE/docs/deploy-info.json"
-
-      - name: Preserve release artifacts from existing gh-pages (merge previous releases, keep last 2 devs)
+      - name: Preserve release artifacts from existing gh-pages (keep all releases, last 2 dev builds)
         run: |
           set -euo pipefail
-          # Clone gh-pages branch into a temp location (if it exists) to preserve release artifacts
           TMP_DIR=$(mktemp -d)
           REPO_URL="https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
           KEEP_DEV_COUNT=2
 
-          echo "Attempting to clone gh-pages branch to inspect existing published assets..."
+          echo "Preserving existing releases and dev builds from gh-pages..."
           if git clone --depth=1 --branch gh-pages "$REPO_URL" "$TMP_DIR" 2>/dev/null; then
-            echo "gh-pages branch cloned to $TMP_DIR"
-            
-            # List what's actually in gh-pages (peaceiris deploys to root, not docs/)
-            echo "Contents of gh-pages firmware:"
-            ls -la "$TMP_DIR/firmware/" || echo "  (directory does not exist)"
-            
-            # Ensure workspace docs firmware directory exists
             mkdir -p "$GITHUB_WORKSPACE/docs/firmware"
 
-            # Copy existing release (non-dev-) firmware directories into workspace docs/firmware
             if [ -d "$TMP_DIR/firmware" ]; then
-              echo "Copying release firmware directories from gh-pages into workspace docs/firmware..."
-              # Only copy directories that do NOT start with dev-
-              if ls -d "$TMP_DIR/firmware"/*/ 2>/dev/null | grep -v '/dev-' > /dev/null; then
-                find "$TMP_DIR/firmware" -maxdepth 1 -mindepth 1 -type d ! -name 'dev-*' -print0 | while IFS= read -r -d '' dir; do
-                  base=$(basename "$dir")
-                  echo "  copying release dir: $base"
-                  # preserve existing release directories; overwrite if same name
-                  rm -rf "$GITHUB_WORKSPACE/docs/firmware/$base" || true
-                  cp -a "$dir" "$GITHUB_WORKSPACE/docs/firmware/$base"
-                done || true
-              else
-                echo "  no release directories found"
-              fi
+              # Copy ALL release directories (non-dev versions) - these persist forever
+              find "$TMP_DIR/firmware" -maxdepth 1 -mindepth 1 -type d ! -name 'dev-*' -print0 | while IFS= read -r -d '' dir; do
+                base=$(basename "$dir")
+                echo "  Preserving release: $base"
+                rm -rf "$GITHUB_WORKSPACE/docs/firmware/$base" || true
+                cp -a "$dir" "$GITHUB_WORKSPACE/docs/firmware/$base"
+              done || true
 
-              echo "Identifying the newest $KEEP_DEV_COUNT dev-* versions from gh-pages..."
-              # Get all dev dirs from gh-pages, sort them (lexicographically newest last), keep last N
+              # For dev builds, keep only the newest KEEP_DEV_COUNT versions
               mapfile -t old_dev_dirs < <(find "$TMP_DIR/firmware" -maxdepth 1 -mindepth 1 -type d -name 'dev-*' -printf '%f\n' | sort)
               old_dev_count=${#old_dev_dirs[@]}
               
-              # Get current version to exclude it from the copy (it's already in workspace)
               CURRENT_VERSION="${{ steps.version.outputs.release_tag }}"
               
               if [ "$old_dev_count" -gt 0 ]; then
-                # We want to keep (KEEP_DEV_COUNT - 1) old versions since current is already there
-                keep_old_count=$(( KEEP_DEV_COUNT - 1 ))
+                # If current build is a dev build, keep (KEEP_DEV_COUNT - 1) old ones
+                # If current build is a release, keep KEEP_DEV_COUNT old dev builds
+                if [[ "$CURRENT_VERSION" == dev-* ]]; then
+                  keep_old_count=$(( KEEP_DEV_COUNT - 1 ))
+                  echo "  Current build is dev, keeping $keep_old_count previous dev builds"
+                else
+                  keep_old_count=$KEEP_DEV_COUNT
+                  echo "  Current build is release, keeping $KEEP_DEV_COUNT dev builds"
+                fi
+                
                 start_index=0
                 if [ "$old_dev_count" -gt "$keep_old_count" ]; then
                   start_index=$(( old_dev_count - keep_old_count ))
                 fi
                 
-                echo "Found $old_dev_count existing dev versions, keeping last $keep_old_count old ones (+ current = $KEEP_DEV_COUNT total)..."
                 for i in $(seq "$start_index" $((old_dev_count - 1))); do
                   dev_name="${old_dev_dirs[$i]}"
-                  # Skip if it's the current version (already in workspace from Scribe step)
                   if [ "$dev_name" != "$CURRENT_VERSION" ]; then
-                    echo "  copying dev dir: $dev_name"
+                    echo "  Preserving dev build: $dev_name"
                     rm -rf "$GITHUB_WORKSPACE/docs/firmware/$dev_name" || true
                     cp -a "$TMP_DIR/firmware/$dev_name" "$GITHUB_WORKSPACE/docs/firmware/$dev_name"
-                  else
-                    echo "  skipping current version (already in workspace): $dev_name"
                   fi
                 done
-              else
-                echo "No existing dev versions found in gh-pages"
               fi
-            else
-              echo "No firmware directory in gh-pages yet"
             fi
 
-            # Now we should have current build + (KEEP_DEV_COUNT - 1) old builds in workspace
-            # No additional pruning needed since we already limited the copy above
-            
-            echo "Verifying final dev version count..."
-            if [ -d "$GITHUB_WORKSPACE/docs/firmware" ]; then
-              mapfile -t final_dev_dirs < <(find "$GITHUB_WORKSPACE/docs/firmware" -maxdepth 1 -mindepth 1 -type d -name 'dev-*' -printf '%f\n' | sort)
-              echo "Final dev versions (${#final_dev_dirs[@]}):"
-              printf '  %s\n' "${final_dev_dirs[@]}"
-            fi
-
-            # Rebuild manifest-index.json from what's actually in docs/firmware after pruning
-            echo "Rebuilding manifest-index.json based on actual firmware directories..."
-            # Get all release versions (non-dev)
+            # Rebuild manifest-index.json from actual firmware directories
             mapfile -t release_versions < <(find "$GITHUB_WORKSPACE/docs/firmware" -maxdepth 1 -mindepth 1 -type d ! -name 'dev-*' -printf '%f\n' | sort -V -r)
-            # Get all dev versions (already sorted and pruned)
             mapfile -t dev_versions < <(find "$GITHUB_WORKSPACE/docs/firmware" -maxdepth 1 -mindepth 1 -type d -name 'dev-*' -printf '%f\n' | sort -r)
             
-            # Combine: dev versions first (newest first), then releases (newest first)
             all_versions=("${dev_versions[@]}" "${release_versions[@]}")
-            
-            # Build JSON array
             version_json=$(printf '%s\n' "${all_versions[@]}" | jq -R . | jq -s .)
             echo "$version_json" | jq '{versions: .}' > "$GITHUB_WORKSPACE/docs/manifest-index.json"
-            
-            echo "Rebuilt manifest-index.json:"
-            cat "$GITHUB_WORKSPACE/docs/manifest-index.json"
 
           else
-            echo "No gh-pages branch present (or clone failed); nothing to preserve."
+            echo "No existing gh-pages branch found"
           fi
 
       - name: Copy the Web Flasher Shrine (interface)
@@ -323,9 +272,7 @@ jobs:
           cp "$GITHUB_WORKSPACE/Code/WebFlasher/index.html" "$GITHUB_WORKSPACE/docs/index.html"
           cp "$GITHUB_WORKSPACE/Code/WebFlasher/logo.png" "$GITHUB_WORKSPACE/docs/logo.png"
           cp "$GITHUB_WORKSPACE/Code/WebFlasher/favicon.png" "$GITHUB_WORKSPACE/docs/favicon.png"
-          echo "Copied web flasher interface"
-          echo "docs/ tree to be published:"
-          ls -la "$GITHUB_WORKSPACE/docs" || true
+          echo "Web flasher interface ready for deployment"
 
       - name: Deploy to gh-pages (peaceiris/actions-gh-pages)
         uses: peaceiris/actions-gh-pages@v3
