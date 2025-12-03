@@ -219,7 +219,7 @@ namespace pocketmage {
 }
 
 void PocketMage_INIT(){
-    pocketmage::checkRebootOTA();
+  pocketmage::checkRebootOTA();
   // Serial, I2C, SPI
   Serial.begin(115200);
   Wire.begin(I2C_SDA, I2C_SCL);

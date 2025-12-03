@@ -68,7 +68,9 @@ public:
   uint8_t maxCharsPerLine() const;
   uint8_t maxLines() const;
   const GFXfont* getCurrentFont();
-  
+  uint8_t getFontHeight() {return fontHeight_; };
+  uint8_t getLineSpacing() {return lineSpacing_; };
+  DisplayT& getDisplay() { return display_; };
   void forceSlowFullUpdate(bool force);
   
 private:

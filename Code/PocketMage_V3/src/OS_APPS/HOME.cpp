@@ -23,6 +23,7 @@ void HOME_INIT() {
   CurrentHOMEState = HOME_HOME;
   lastInput = millis();
   newState = true;
+  //frames.push_back(&testTextScreen);
 }
 
 void commandSelect(String command) {
@@ -427,6 +428,7 @@ void einkHandler_HOME() {
         newState = false;
         drawHome();
         EINK().refresh();
+        //einkFramesDynamic(frames,false);
         //EINK().multiPassRefresh(2);
       }
       break;
