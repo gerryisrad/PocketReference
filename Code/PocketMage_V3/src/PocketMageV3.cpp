@@ -114,9 +114,10 @@ void setup() {
 // Keyboard / OLED Loop
 void loop() {
   if (!noTimeout)  pocketmage::time::checkTimeout();
-  if (DEBUG_VERBOSE) pocketmage::debug::printDebug();
-
-  PowerSystem.printDiagnostics(); // power diag
+  if (DEBUG_VERBOSE) {
+    pocketmage::debug::printDebug();
+    PowerSystem.printDiagnostics(); // power diag
+  }
   
   pocketmage::power::updateBattState();
   processKB();

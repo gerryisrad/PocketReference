@@ -18,9 +18,7 @@
 #include "esp_system.h"
 
 static constexpr const char* TAG = "SYSTEM";
-// To Do: migrate to pocketmage::
-
-
+bool doNowLater = false;
 
 ///////////////////////////////////////////////////////////////////////////////
 //            Use this function in apps to return to PocketMage OS           //
@@ -529,25 +527,6 @@ namespace pocketmage::time{
         switch (CurrentAppState) {
             case TXT:
             if (SLEEPMODE == "TEXT" && SD().getEditingFile() != "") {
-                /*
-                EINK().setFullRefreshAfter(FULL_REFRESH_AFTER + 1);
-                display.setFullWindow();
-                EINK().einkTextDynamic(true, true);
-
-                display.setFont(&FreeMonoBold9pt7b);
-
-                display.fillRect(0, display.height() - 26, display.width(), 26, GxEPD_WHITE);
-                display.drawRect(0, display.height() - 20, display.width(), 20, GxEPD_BLACK);
-                display.setCursor(4, display.height() - 6);
-                //display.drawBitmap(display.width() - 30, display.height() - 20, KBStatusallArray[6], 30,
-                //                20, GxEPD_BLACK);
-                EINK().statusBar(editingFile, true);
-
-                display.fillRect(320 - 86, 240 - 52, 87, 52, GxEPD_WHITE);
-                display.drawBitmap(320 - 86, 240 - 52, sleep1, 87, 52, GxEPD_BLACK);
-
-                // Put device to sleep with alternate sleep screen
-                */
                 pocketmage::power::deepSleep(true);
             } else
                 pocketmage::power::deepSleep();
@@ -583,7 +562,7 @@ namespace pocketmage::time{
         }
 
 
-        if (digitalRead(CHRG_SENS) == HIGH) {
+        if ((digitalRead(CHRG_SENS) == HIGH) && doNowLater) {
         // Save last state
 
         prefs.begin("PocketMage", false);
@@ -690,7 +669,7 @@ namespace pocketmage::time{
 }    // namespace pocketmage::time
 
 namespace pocketmage::power{
-    
+
     void deepSleep(bool alternateScreenSaver) {
     // Put OLED to sleep
     u8g2.setPowerSave(1);
@@ -771,6 +750,11 @@ namespace pocketmage::power{
     prefs.putInt("CurrentAppState", static_cast<int>(CurrentAppState));
     prefs.putString("editingFile", SD().getEditingFile());
     prefs.end();
+
+    // Shut down BMS
+    PowerSystem.setBoost(false);
+    PowerSystem.setUSBControlBMS();
+    PowerSystem.setCCMode(0b000); // Set CC mode: 000 = Sink only
 
     // Sleep the ESP32
     esp_deep_sleep_start();
