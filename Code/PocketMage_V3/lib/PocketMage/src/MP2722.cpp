@@ -253,8 +253,9 @@ bool MP2722::init(uint8_t sda, uint8_t scl) {
   // Give USB control to BMS
   setUSBControlBMS();
 
+  // Set CC mode: 011 = Dual Role Power, try SNK
   // Set CC mode: 010 = Dual Role Power
-  if (!setCCMode(0b010)) return false;
+  if (!setCCMode(0b011)) return false;
 
   // Disable reverse boost
   if (!setBoost(false)) return false;
@@ -266,7 +267,7 @@ bool MP2722::init(uint8_t sda, uint8_t scl) {
   bool low;
   if (!isBatteryLow(low)) return false;
   if (low) {
-    // TODO: add "battery low" Eink/OLED message
+    #pragma message "TODO: Add OLED battery low warning"
     //esp_deep_sleep_start();  // Enter deep sleep immediately
     return false;            // Not reached
   }

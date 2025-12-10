@@ -738,7 +738,7 @@ char PocketmageKB::updateKeypress() {
       //return currentKB[k/10][k%10];
       if ((k/10) < 4) {
         //Key was pressed, reset timeout counter
-        if (prevTimeMillis_) *prevTimeMillis_ = millis();
+        CLOCK().setPrevTimeMillis(millis());
 
         //Return Key
         switch (kbState_) {
@@ -786,13 +786,15 @@ void PocketmageKB::checkUSBKB() {
   }
   else {
 
-    // Should probably add shutdown script here but it does not work...
+    #pragma message "TODO: Should probably add shutdown script here but it does not work..."
     // close_USBHID();
 
     // Disable boost if not already off
     bool boostOn;
     if (PowerSystem.getBoostState(boostOn) && boostOn) {
-        PowerSystem.setBoost(false);
+      PowerSystem.setBoost(false);
+      detachInterrupt(digitalPinToInterrupt(PWR_BTN));
+      attachInterrupt(digitalPinToInterrupt(PWR_BTN), pocketmage::power::PWR_BTN_irq, FALLING);
     }
 
     PowerSystem.setUSBControlBMS();

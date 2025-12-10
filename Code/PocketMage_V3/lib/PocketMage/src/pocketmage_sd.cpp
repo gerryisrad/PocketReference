@@ -190,8 +190,6 @@ String PocketmageSD::readFileToString(fs::FS &fs, const char *path) {
       return "";  // Return an empty string on failure
     }
 
-    // TODO: Can't we use readString()?
-    // Serial.println("- reading from file:");
     ESP_LOGI(tag, "Reading from file: %s", file.path());
     String content = file.readString();
 

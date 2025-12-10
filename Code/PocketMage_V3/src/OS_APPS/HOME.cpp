@@ -92,7 +92,17 @@ void commandSelect(String command) {
   else if (command == "b") rebootToAppSlot(2);
   else if (command == "c") rebootToAppSlot(3);
   else if (command == "d") rebootToAppSlot(4);
-
+  
+  /////////////////////////////
+  else if (command == "reset") {
+    esp_restart();
+  } 
+  /////////////////////////////
+  else if (command == "sleep") {
+    PWR_BTN_event = true;
+    //pocketmage::power::deepSleep();
+  }
+  /////////////////////////////
   else if (command == "home") {
     OLED().oledWord("You're home, silly!");
     delay(1000);
