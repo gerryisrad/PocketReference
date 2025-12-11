@@ -748,7 +748,6 @@ void drawCalendarMonth(int monthOffset) {
     int y = GRID_Y + row * CELL_H;
     display.fillRect(x, y, CELL_W, CELL_H, GxEPD_WHITE);
   }
-  Serial.println(daysInMonth);
   // Step 6: Draw day numbers and events
   for (int i = 0; i < daysInMonth; ++i) {
     int dayIndex = i + startDay;     // total box index in the 7x6 grid
