@@ -665,4 +665,48 @@ void PocketmageSD::deleteFile(fs::FS &fs, const char *path) {
     if (SAVE_POWER) pocketmage::setCpuSpeed(POWER_SAVE_FREQ);
   }
 }
+bool PocketmageSD::readBinaryFile(const char* path, uint8_t* buf, size_t len) {
+  if (!fileSys_)
+    return false;
+  if (noSD_ && *noSD_) {
+    if (oled_)
+      oled_->oledWord("OP FAILED - No SD!");
+    delay(5000);
+    return false;
+  }
+
+  setCpuFrequencyMhz(240);
+  if (noTimeout_)
+    *noTimeout_ = true;
+
+  File f = fileSys_->open(path, "r");
+  if (!f || f.isDirectory()) {
+    if (noTimeout_)
+      *noTimeout_ = false;
+    ESP_LOGE(tag, "Failed to open file: %s", path);
+    return false;
+  }
+
+  size_t n = f.read(buf, len);
+  f.close();
+
+  if (noTimeout_)
+    *noTimeout_ = false;
+  if (SAVE_POWER)
+    setCpuFrequencyMhz(40);
+
+  return n == len;
+}
+
+size_t PocketmageSD::getFileSize(const char* path) {
+  if (!fileSys_ || (noSD_ && *noSD_))
+    return 0;
+
+  File f = fileSys_->open(path, "r");
+  if (!f)
+    return 0;
+  size_t size = f.size();
+  f.close();
+  return size;
+}
 

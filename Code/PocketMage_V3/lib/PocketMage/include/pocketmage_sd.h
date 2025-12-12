@@ -50,7 +50,11 @@ public:
   void appendFile(fs::FS &fs, const char *path, const char *message);
   void renameFile(fs::FS &fs, const char *path1, const char *path2);
   void deleteFile(fs::FS &fs, const char *path);
-  
+  // Read a binary file fully into a buffer
+  bool readBinaryFile(const char* path, uint8_t* buf, size_t len);
+  // Convenience: read file size
+  size_t getFileSize(const char* path);
+
 private:
 
   static constexpr const char*  tag               = "MAGE_SD";
