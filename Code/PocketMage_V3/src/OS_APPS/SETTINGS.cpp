@@ -17,12 +17,12 @@ void SETTINGS_INIT() {
 void settingCommandSelect(String command) {
   command.toLowerCase();
 
-  if (command.startsWith("timeset ")) {
+  if (command.startsWith("timeset ") || command.startsWith("settime ")) {
     String timePart = command.substring(8);
     CLOCK().setTimeFromString(timePart);
     return;
   }
-  else if (command.startsWith("dateset ")) {
+  else if (command.startsWith("dateset ") || command.startsWith("setdate ")) {
     String datePart = command.substring(8);
     if (datePart.length() == 8 && datePart.toInt() > 0) {
       int year  = datePart.substring(0, 4).toInt();

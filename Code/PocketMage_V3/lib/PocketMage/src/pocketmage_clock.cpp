@@ -54,6 +54,29 @@ PocketmageCLOCK::TimeParseResult PocketmageCLOCK::parseTimeString(const String& 
   outHours = -1;
   outMinutes = -1;
 
+  // --- Detect AM / PM suffix ---
+  bool isAM = false;
+  bool isPM = false;
+
+  String lower = s;
+  lower.toLowerCase();
+
+  if (lower.endsWith("am")) {
+    isAM = true;
+    s = s.substring(0, s.length() - 2);
+  } else if (lower.endsWith("pm")) {
+    isPM = true;
+    s = s.substring(0, s.length() - 2);
+  } else if (lower.endsWith("a")) {
+    isAM = true;
+    s = s.substring(0, s.length() - 1);
+  } else if (lower.endsWith("p")) {
+    isPM = true;
+    s = s.substring(0, s.length() - 1);
+  }
+
+  s.trim();
+
   int colonIdx = s.indexOf(':');
 
   if (colonIdx != -1) {
@@ -74,6 +97,17 @@ PocketmageCLOCK::TimeParseResult PocketmageCLOCK::parseTimeString(const String& 
     int value = s.toInt();
     outHours = value / 100;
     outMinutes = value % 100;
+  }
+
+  // --- Apply AM/PM conversion ---
+  if (isAM || isPM) {
+    if (outHours < 1 || outHours > 12)
+      return TIME_OUT_OF_RANGE;
+
+    if (isAM && outHours == 12)
+      outHours = 0;
+    else if (isPM && outHours != 12)
+      outHours += 12;
   }
 
   if (outHours < 0 || outHours > 23 || outMinutes < 0 || outMinutes > 59)
