@@ -1,8 +1,8 @@
 # PocketMage FAQ
 
-#### Helpful Links
-
 ---
+
+#### Helpful Links
 
 [PocketMage.org](https://pocketmage.org/)
 
@@ -14,9 +14,9 @@
 
 [Ashtf - Patreon](patreon.com/Ashtf)
 
-#### General Information
-
 ---
+
+#### General Information
 
 ###### **What is PocketMage?**
 
@@ -60,11 +60,9 @@ You can subscribe to [Ashtf's YouTube Channel](https://www.youtube.com/@ashtf) f
 
 
 
-
+---
 
 #### Building and Operating the PocketMage
-
----
 
 ###### **Where is the build guide?**
 
@@ -82,6 +80,10 @@ Yes! That guide can be found [here.](https://github.com/ashtf8/PocketMage_PDA/tr
 
 First, carefully **remove the battery** out of your PocketMage (pull carefully on the plastic connector). Then, ensure the DIP switch for programming mode is switched to the ON position. Next, hold the power button while plugging your PocketMage into your computer, **nothing should happen**. Next, navigate to [The Web Flasher](https://ashtf8.github.io/PocketMage_PDA/) in a **chrome-based browser** and select your firmware version. The **most recent stable build** is recommended. If you would like to keep your saved settings, ensure that the "Preserve user data during installation" check box is **checked**. Next, hit the flash button and select the PocketMage from the list of USB devices. Once the flashing is done, unplug your PocketMage and re-insert the battery. PocketMage should boot up automatically!
 
+
+###### **What SD card can I use?**
+
+You can use any microSD card up to 32gb. **8gb is recommended** since PocketMage files are small and require very little storage. The smaller the SD card you use, the faster the PocketMage will be. SD cards **MUST** be formatted to **FAT32** format.
 
 
 ###### **Where are the CAD files?**
@@ -126,5 +128,5 @@ Please report the bug in detail on the [GitHub issues page](https://github.com/a
 
 ###### **My SD card isn't working!**
 
-First, ensure that your SD card is below 128gb. The recommended size is under 64gb. Next, ensure that your SD card is formatted to FAT32. It will not work unless it's formatted to FAT32.
+First, ensure that your SD card is below 32gb. The recommended size is 16gb, the smaller the SD card the faster the PocketMage will be. Next, ensure that your SD card is formatted to FAT32. It will not work unless it's formatted to FAT32.
 
