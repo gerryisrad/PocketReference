@@ -268,7 +268,7 @@ void processKB_TASKS() {
         //Make sure oled only updates at 60fps
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentLine, false);
+          OLED().oledLine(currentLine, currentLine.length(), false);
         }
       }
       break;

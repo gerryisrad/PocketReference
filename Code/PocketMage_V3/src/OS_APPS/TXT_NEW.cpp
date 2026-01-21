@@ -1935,7 +1935,7 @@ void processKB_TXT_NEW() {
         //Make sure oled only updates at OLED_MAX_FPS
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentLine, false, "Input Filename");
+          OLED().oledLine(currentLine, currentLine.length(), false, "Input Filename");
         }
       }
       break;
@@ -1999,7 +1999,7 @@ void processKB_TXT_NEW() {
         //Make sure oled only updates at OLED_MAX_FPS
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentLine, false, "Input Name for New File");
+          OLED().oledLine(currentLine, currentLine.length(), false, "Input Name for New File");
         }
       }
       break;

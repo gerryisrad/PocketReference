@@ -4,6 +4,7 @@ enum SettingsState { settings0, settings1 };
 SettingsState CurrentSettingsState = settings0;
 
 static String currentLine = "";
+static int cursor_pos = 0;
 
 void SETTINGS_INIT() {
   // OPEN SETTINGS
@@ -219,6 +220,8 @@ void settingCommandSelect(String command) {
 
 void processKB_settings() {
   int currentMillis = millis();
+  String left = "";
+  String right = "";
 
   switch (CurrentSettingsState) {
     case settings0:
@@ -231,6 +234,7 @@ void processKB_settings() {
         else if (inchar == 13) {                          
           settingCommandSelect(currentLine);
           currentLine = "";
+          cursor_pos = 0;
         }                                      
         // SHIFT Recieved
         else if (inchar == 17) {
@@ -252,26 +256,59 @@ void processKB_settings() {
             KB().setKeyboardState(FUNC);
           }
         }
-        //Space Recieved
-        else if (inchar == 32) {                                  
-          currentLine += " ";
-        }
         //ESC / CLEAR Recieved
-        else if (inchar == 20) {                                  
+        else if (inchar == 29) {                                  
           currentLine = "";
+          cursor_pos = 0;
+          KB().setKeyboardState(NORMAL);
         }
         //BKSP Recieved
-        else if (inchar == 8) {                  
-          if (currentLine.length() > 0) {
-            currentLine.remove(currentLine.length() - 1);
+        else if (inchar == 8) {
+          if (currentLine.length() > 0 && cursor_pos != 0) {
+            if (cursor_pos == currentLine.length()) {
+              currentLine.remove(currentLine.length() - 1, 1);
+            } else {
+              currentLine.remove(cursor_pos - 1, 1);
+            }
+            cursor_pos--;
           }
+        }
+        // LEFT
+        else if (inchar == 19) {
+          if (cursor_pos > 0) {
+            cursor_pos--;
+          }
+        }
+        // RIGHT
+        else if (inchar == 21) {
+          if (cursor_pos < currentLine.length()) {
+            cursor_pos++;
+          }
+        }
+        // CENTER
+        else if (inchar == 20) {
+          cursor_pos = currentLine.length();
         }
         // Home recieved
         else if (inchar == 12) {
           HOME_INIT();
         }
+        else if (inchar == 9 || inchar == 28 || inchar == 30 || inchar == 14 || inchar == 7 || inchar == 6) {
+          //ignore unprintable keys we don't use
+          KB().setKeyboardState(NORMAL);
+        }
         else {
-          currentLine += inchar;
+          //split line at cursor_pos
+          if (cursor_pos == 0) {
+            currentLine = inchar + currentLine;
+          } else if (cursor_pos == currentLine.length()) {
+            currentLine += inchar;
+          } else {
+            left = currentLine.substring(0, cursor_pos);
+            right = currentLine.substring(cursor_pos);
+            currentLine = left + inchar + right;
+          }
+          cursor_pos++;
           if (inchar >= 48 && inchar <= 57) {}  //Only leave FN on if typing numbers
           else if (KB().getKeyboardState() != NORMAL) {
             KB().setKeyboardState(NORMAL);
@@ -282,7 +319,7 @@ void processKB_settings() {
         //Make sure oled only updates at OLED_MAX_FPS
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentLine, false);
+          OLED().oledLine(currentLine, cursor_pos, false);
         }
       }
       break;
