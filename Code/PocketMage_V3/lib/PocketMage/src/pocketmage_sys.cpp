@@ -73,9 +73,6 @@ namespace pocketmage {
     }
 
     void deepSleep(bool alternateScreenSaver) {
-        
-
-
         // Put OLED to sleep
         u8g2.setPowerSave(1);
 
@@ -157,6 +154,7 @@ namespace pocketmage {
         prefs.begin("PocketMage", false);
         prefs.putInt("CurrentAppState", static_cast<int>(CurrentAppState));
         prefs.putString("editingFile", SD().getEditingFile());
+				prefs.putBool("Seamless_Reboot", false);
         prefs.end();
         // Sleep the ESP32
         esp_deep_sleep_start();
@@ -219,7 +217,19 @@ namespace pocketmage {
 }
 
 void PocketMage_INIT(){
+	// Check if in OTA app
   pocketmage::checkRebootOTA();
+
+	// Check if seamless restart
+	ESP_LOGE(TAG, "Checking OTA reboot flag");
+	bool seamlessReboot = false;
+	prefs.begin("PocketMage", false);
+	if (prefs.getBool("Seamless_Reboot", false) == true){
+			seamlessReboot = true;
+			prefs.putBool("Seamless_Reboot", false);
+	}
+	prefs.end();
+
   // Serial, I2C, SPI
   Serial.begin(115200);
   Wire.begin(I2C_SDA, I2C_SCL);
@@ -233,10 +243,10 @@ void PocketMage_INIT(){
   // OLED SETUP
   setupOled();
 
-   if (!OTA_APP){
+  if (!OTA_APP && !seamlessReboot){
     // SHOW "PocketMage" while DEVICE BOOTS
     OLED().oledWord("   PocketMage   ", true, false);
-   }
+  }
 
   // KEYBOARD SETUP
   setupKB(KB_IRQ);
@@ -279,7 +289,10 @@ void PocketMage_INIT(){
   
   // STARTUP JINGLE
   setupBZ();
-  ESP_LOGD(TAG,"setup buzzer"); 
+  ESP_LOGD(TAG,"setup buzzer");
+	if (!seamlessReboot) {
+		BZ().playJingle(Jingles::Startup);
+	}
 }
 
 // ===================== GLOBAL TEXT HELPERS =====================

@@ -212,7 +212,11 @@ void processKB_USB() {
     // Home recieved
     else if (inchar == 12 || inchar == 8 || inchar == 19 || inchar == 28|| inchar == 12) {
       USBAppShutdown();
-      HOME_INIT();
+      prefs.begin("PocketMage", false);
+      prefs.putInt("CurrentAppState", static_cast<int>(HOME));
+      prefs.putBool("Seamless_Reboot", true);
+      prefs.end();
+      esp_restart();
     }
   }
 }
