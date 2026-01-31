@@ -158,7 +158,7 @@ void processKB_TXT_OLD() {
           OLEDFPSMillis = currentMillis;
           // ONLY SHOW OLEDLINE WHEN NOT IN SCROLL MODE
           if (TOUCH().getLastTouch() == -1) {
-            OLED().oledLine(currentLine);
+            OLED().oledLine(currentLine, currentLine.length());
             if (TOUCH().getPrevDynamicScroll() != TOUCH().getDynamicScroll()) TOUCH().setPrevDynamicScroll(TOUCH().getDynamicScroll());
           }
           else OLED().oledScroll();
@@ -246,7 +246,7 @@ void processKB_TXT_OLD() {
         //Make sure oled only updates at 60fps
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentWord, false);
+          OLED().oledLine(currentWord, currentWord.length(),false);
         }
         break;
       case WIZ1:
@@ -308,7 +308,7 @@ void processKB_TXT_OLD() {
         //Make sure oled only updates at 60fps
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentWord, false);
+          OLED().oledLine(currentWord, currentWord.length(), false);
         }
         break;
 
@@ -383,7 +383,7 @@ void processKB_TXT_OLD() {
         //Make sure oled only updates at 60fps
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentWord, false);
+          OLED().oledLine(currentWord, currentWord.length(), false);
         }
         break;
       case WIZ3:
@@ -450,7 +450,7 @@ void processKB_TXT_OLD() {
         //Make sure oled only updates at 60fps
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentWord, false);
+          OLED().oledLine(currentWord, currentWord.length(), false);
         }
         break;
       case FONT:
@@ -512,7 +512,7 @@ void processKB_TXT_OLD() {
         //Make sure oled only updates at 60fps
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentWord, false);
+          OLED().oledLine(currentWord, currentWord.length(), false);
         }
         break;
 

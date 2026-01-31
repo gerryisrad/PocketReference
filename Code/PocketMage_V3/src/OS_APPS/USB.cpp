@@ -201,7 +201,7 @@ void processKB_USB() {
   //Make sure oled only updates at 10FPS
   if (currentMillis - OLEDFPSMillis >= (1000/10 /*OLED_MAX_FPS*/)) {
     OLEDFPSMillis = currentMillis;
-    OLED().oledLine(currentLine, false);
+    OLED().oledLine(currentLine, currentLine.length(), false);
   }
   
   if (currentMillis - KBBounceMillis >= KB_COOLDOWN) {  

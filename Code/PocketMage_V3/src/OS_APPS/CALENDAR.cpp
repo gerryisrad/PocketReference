@@ -961,7 +961,7 @@ void processKB_CALENDAR() {
         //Make sure oled only updates at OLED_MAX_FPS
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentLine, false);
+          OLED().oledLine(currentLine, currentLine.length(), false);
         }
       }
       break;
@@ -1031,7 +1031,7 @@ void processKB_CALENDAR() {
         //Make sure oled only updates at OLED_MAX_FPS
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentLine, false);
+          OLED().oledLine(currentLine, currentLine.length(), false);
         }
       }
       break;
@@ -1200,22 +1200,22 @@ void processKB_CALENDAR() {
           OLEDFPSMillis = currentMillis;
           switch(newEventState) {
             case 0:
-              OLED().oledLine(currentLine, false, "Enter the Event Name");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Enter the Event Name");
               break;
             case 1:
-              OLED().oledLine(currentLine, false, "Enter the Start Date (YYYYMMDD)");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Enter the Start Date (YYYYMMDD)");
               break;
             case 2:
-              OLED().oledLine(currentLine, false, "Enter the Start Time (HH:MM)");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Enter the Start Time (HH:MM)");
               break;
             case 3:
-              OLED().oledLine(currentLine, false, "Enter the Event Duration (HH:MM)");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Enter the Event Duration (HH:MM)");
               break;
             case 4:
-              OLED().oledLine(currentLine, false, "Enter the Repeat Code or \"Help\"");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Enter the Repeat Code or \"Help\"");
               break;
             case 5:
-              OLED().oledLine(currentLine, false, "Attach a Note to the Event");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Attach a Note to the Event");
               break;
           }
         }
@@ -1423,25 +1423,25 @@ void processKB_CALENDAR() {
           OLEDFPSMillis = currentMillis;
           switch(newEventState) {
             case -1:
-              OLED().oledLine(currentLine, false);
+              OLED().oledLine(currentLine, currentLine.length(), false);
               break;
             case 0:
-              OLED().oledLine(currentLine, false, "Enter the Event Name");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Enter the Event Name");
               break;
             case 1:
-              OLED().oledLine(currentLine, false, "Enter the Start Date (YYYYMMDD)");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Enter the Start Date (YYYYMMDD)");
               break;
             case 2:
-              OLED().oledLine(currentLine, false, "Enter the Start Time (HH:MM)");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Enter the Start Time (HH:MM)");
               break;
             case 3:
-              OLED().oledLine(currentLine, false, "Enter the Event Duration (HH:MM)");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Enter the Event Duration (HH:MM)");
               break;
             case 4:
-              OLED().oledLine(currentLine, false, "Enter the Repeat Code or \"Help\"");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Enter the Repeat Code or \"Help\"");
               break;
             case 5:
-              OLED().oledLine(currentLine, false, "Attach a Note to the Event");
+              OLED().oledLine(currentLine, currentLine.length(), false, "Attach a Note to the Event");
               break;
           }
         }
@@ -1567,7 +1567,7 @@ void processKB_CALENDAR() {
         //Make sure oled only updates at OLED_MAX_FPS
         if (currentMillis - OLEDFPSMillis >= (1000/OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentLine, false);
+          OLED().oledLine(currentLine, currentLine.length(), false);
         }
       }
       break;

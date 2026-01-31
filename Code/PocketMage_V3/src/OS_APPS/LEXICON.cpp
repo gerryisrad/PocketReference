@@ -62,6 +62,7 @@ int clampDefinitionIndex(int idx, int total) {
 }
 
 static String currentLine = "";
+static int cursor_pos = 0;
 
 // Vector to hold the definitions
 std::vector<std::pair<String, String>> defList;
@@ -169,6 +170,8 @@ void loadDefinitions(String input) {
 
 void processKB_LEXICON() {
   int currentMillis = millis();
+  String left = "";
+  String right = "";
 
   switch (CurrentLexState) {
     case MENU:
@@ -182,6 +185,7 @@ void processKB_LEXICON() {
         else if (inchar == 13) {
           loadDefinitions(currentLine);
           currentLine = "";
+          cursor_pos = 0;
         }  
         // SHIFT Recieved
         else if (inchar == 17) {
@@ -203,25 +207,59 @@ void processKB_LEXICON() {
             KB().setKeyboardState(FUNC);
           }
         }
-        // Space Recieved
-        else if (inchar == 32) {
-          currentLine += " ";
-        }
         // ESC / CLEAR Recieved
-        else if (inchar == 20) {
+        else if (inchar == 29) {
           currentLine = "";
+          cursor_pos = 0;
+          KB().setKeyboardState(NORMAL);
         }
         // BKSP Recieved
         else if (inchar == 8) {
-          if (currentLine.length() > 0) {
-            currentLine.remove(currentLine.length() - 1);
+          if (currentLine.length() > 0 && cursor_pos != 0) {
+            if (cursor_pos == currentLine.length()) {
+              currentLine.remove(currentLine.length() - 1, 1);
+            } else { 
+              currentLine.remove(cursor_pos - 1, 1);
+            }
+            cursor_pos--;
           }
+        }
+        // LEFT
+        else if (inchar == 19) {
+          if (cursor_pos > 0) {
+            cursor_pos--;
+          }
+        }
+        // RIGHT
+        else if (inchar == 21) {
+          if (cursor_pos < currentLine.length()) {
+            cursor_pos++;
+          }
+        }
+        // CENTER
+        else if (inchar == 20) {
+          cursor_pos = currentLine.length();
         }
         // Home recieved
         else if (inchar == 12) {
           HOME_INIT();
-        } else {
-          currentLine += inchar;
+        }
+        else if (inchar == 9 || inchar == 28 || inchar == 30 || inchar == 14 || inchar == 7 || inchar == 6) {
+          //ignore unprintable keys we don't use
+          KB().setKeyboardState(NORMAL);
+        }
+        else {
+          //split line at cursor_pos
+          if (cursor_pos == 0) {
+            currentLine = inchar + currentLine;
+          } else if (cursor_pos == currentLine.length()) {
+            currentLine += inchar;
+          } else {
+            left = currentLine.substring(0, cursor_pos);
+            right = currentLine.substring(cursor_pos);
+            currentLine = left + inchar + right;
+          }
+          cursor_pos++;
           if (inchar >= 48 && inchar <= 57) {
           }  // Only leave FN on if typing numbers
           else if (KB().getKeyboardState() != NORMAL) {
@@ -233,7 +271,7 @@ void processKB_LEXICON() {
         // Make sure oled only updates at OLED_MAX_FPS
         if (currentMillis - OLEDFPSMillis >= (1000 / OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentLine, false);
+          OLED().oledLine(currentLine, cursor_pos, false);
         }
       }
       break;
@@ -249,6 +287,7 @@ void processKB_LEXICON() {
         else if (inchar == 13) {
           loadDefinitions(currentLine);
           currentLine = "";
+          cursor_pos = 0;
         }                                      
         // SHIFT Recieved
         else if (inchar == 17) {
@@ -270,42 +309,68 @@ void processKB_LEXICON() {
             KB().setKeyboardState(FUNC);
           }
         }
-        // Space Recieved
-        else if (inchar == 32) {
-          currentLine += " ";
-        }
         // ESC / CLEAR Recieved
-        else if (inchar == 20) {
+        else if (inchar == 29) {
           currentLine = "";
+          cursor_pos = 0;
         }
         // BKSP Recieved
         else if (inchar == 8) {
-          if (currentLine.length() > 0) {
-            currentLine.remove(currentLine.length() - 1);
+          if (currentLine.length() > 0 && cursor_pos != 0) {
+            if (cursor_pos == currentLine.length()) {
+              currentLine.remove(currentLine.length() - 1, 1);
+            } else { 
+              currentLine.remove(cursor_pos - 1, 1);
+            }
+            cursor_pos--;
           }
+        }
+        // LEFT
+        else if (inchar == 19) {
+          if (currentLine.length() == 0) {
+            definitionIndex--;
+            if (definitionIndex < 0)
+              definitionIndex = 0;
+            newState = true;
+          } else {
+            if (cursor_pos > 0) {
+              cursor_pos--;
+            }
+          }
+        }
+        // RIGHT
+        else if (inchar == 21) {
+          if (currentLine.length() == 0) {
+            definitionIndex++;
+            if (definitionIndex >= defList.size())
+              definitionIndex = defList.size() - 1;
+            newState = true;
+          } else {
+            if (cursor_pos < currentLine.length()) {
+              cursor_pos++;
+            }
+          }
+        }
+        // CENTER
+        else if (inchar == 20) {
+          cursor_pos = currentLine.length();
         }
         // Home recieved
         else if (inchar == 12) {
           HOME_INIT();
         }
-
-        // LEFT Recieved
-        else if (inchar == 19) {
-          definitionIndex--;
-          if (definitionIndex < 0)
-            definitionIndex = 0;
-          newState = true;
-        }
-        // RIGHT Received
-        else if (inchar == 21) {
-          definitionIndex++;
-          if (definitionIndex >= defList.size())
-            definitionIndex = defList.size() - 1;
-          newState = true;
-        }
-
         else {
-          currentLine += inchar;
+          //split line at cursor_pos
+          if (cursor_pos == 0) {
+            currentLine = inchar + currentLine;
+          } else if (cursor_pos == currentLine.length()) {
+            currentLine += inchar;
+          } else {
+            left = currentLine.substring(0, cursor_pos);
+            right = currentLine.substring(cursor_pos);
+            currentLine = left + inchar + right;
+          }
+          cursor_pos++;
           if (inchar >= 48 && inchar <= 57) {
           }  // Only leave FN on if typing numbers
           else if (KB().getKeyboardState() != NORMAL) {
@@ -317,7 +382,7 @@ void processKB_LEXICON() {
         // Make sure oled only updates at OLED_MAX_FPS
         if (currentMillis - OLEDFPSMillis >= (1000 / OLED_MAX_FPS)) {
           OLEDFPSMillis = currentMillis;
-          OLED().oledLine(currentLine, false);
+          OLED().oledLine(currentLine, cursor_pos, false);
         }
       }
       break;
