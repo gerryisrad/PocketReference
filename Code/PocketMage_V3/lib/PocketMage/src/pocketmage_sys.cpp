@@ -220,15 +220,15 @@ void PocketMage_INIT(){
 	// Check if in OTA app
   pocketmage::checkRebootOTA();
 
-	// Check if seamless restart
-	ESP_LOGE(TAG, "Checking OTA reboot flag");
-	bool seamlessReboot = false;
-	prefs.begin("PocketMage", false);
-	if (prefs.getBool("Seamless_Reboot", false) == true){
-			seamlessReboot = true;
-			prefs.putBool("Seamless_Reboot", false);
-	}
-	prefs.end();
+  // Check if seamless restart
+  ESP_LOGE(TAG, "Checking OTA reboot flag");
+  bool seamlessReboot = false;
+  prefs.begin("PocketMage", false);
+  if (prefs.getBool("Seamless_Reboot", false) == true){
+          seamlessReboot = true;
+          prefs.putBool("Seamless_Reboot", false);
+  }
+  prefs.end();
 
   // Serial, I2C, SPI
   Serial.begin(115200);
@@ -243,10 +243,8 @@ void PocketMage_INIT(){
   // OLED SETUP
   setupOled();
 
-  if (!OTA_APP && !seamlessReboot){
-    // SHOW "PocketMage" while DEVICE BOOTS
-    OLED().oledWord("   PocketMage   ", true, false);
-  }
+  // SHOW "PocketMage" while DEVICE BOOTS
+  if (!OTA_APP && !seamlessReboot) OLED().oledWord("   PocketMage   ", true, false);
 
   // KEYBOARD SETUP
   setupKB(KB_IRQ);
@@ -290,9 +288,7 @@ void PocketMage_INIT(){
   // STARTUP JINGLE
   setupBZ();
   ESP_LOGD(TAG,"setup buzzer");
-	if (!seamlessReboot) {
-		BZ().playJingle(Jingles::Startup);
-	}
+	if (!seamlessReboot) BZ().playJingle(Jingles::Startup);
 }
 
 // ===================== GLOBAL TEXT HELPERS =====================

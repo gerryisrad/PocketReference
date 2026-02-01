@@ -42,11 +42,15 @@ void setupSD() {
   SD_MMC.setPins(SD_CLK, SD_CMD, SD_D0);
 
   bool sdOK = false;
-  for (int attempt = 1; attempt <= 3; attempt++) {
+  bool startedSD = false;
+  sdcard_type_t cardType = CARD_NONE;
+  for (int attempt = 1; attempt <= 25; attempt++) {
     if (SD_MMC.begin("/sdcard", true)) {
+      startedSD = true;
       delay(120); // allow cardType() to settle
 
-      if (SD_MMC.cardType() != CARD_NONE) {
+      cardType = SD_MMC.cardType();
+      if (cardType != CARD_NONE) {
         sdOK = true;
         break;
       }
@@ -59,17 +63,29 @@ void setupSD() {
 
   if (!sdOK) {
     ESP_LOGE(TAG, "MOUNT FAILED");
+    
+    if (startedSD) {
+      OLED().oledWord(
+        String("SD Not Detected! [") +
+        (cardType == CARD_MMC  ? "MMC"  :
+        cardType == CARD_SD   ? "SD"   :
+        cardType == CARD_SDHC ? "SDHC" :
+                                "NONE") +
+        "]"
+      , false, false);
+    } else {
+      OLED().oledWord("SD Not Detected! [START_FAIL]", false, false);
+    }
 
-    OLED().oledWord("SD Card Not Detected!");
-    delay(2000);
+    delay(5000);
 
     if (ALLOW_NO_MICROSD) {
-      OLED().oledWord("All Work Will Be Lost!");
+      OLED().oledWord("All Work Will Be Lost!", false, false);
       delay(5000);
       SD().setNoSD(true);
       return;
     } else {
-      OLED().oledWord("Insert SD Card and Reboot!");
+      OLED().oledWord("Insert SD Card and Reboot!", false, false);
       delay(5000);
       OLED().setPowerSave(1);
       BZ().playJingle(Jingles::Shutdown);
