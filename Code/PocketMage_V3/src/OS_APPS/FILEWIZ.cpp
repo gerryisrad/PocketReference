@@ -25,6 +25,7 @@ std::vector<String> excludedPaths = {
 
 void FILEWIZ_INIT() {
   CurrentAppState = FILEWIZ;
+  CurrentFileWizState = WIZ0_;
   KB().setKeyboardState(NORMAL);
   EINK().forceSlowFullUpdate(true);
   newState = true;
@@ -366,8 +367,7 @@ void processKB_FILEWIZ() {
         if (inchar == 0);
         //BKSP Recieved
         else if (inchar == 127 || inchar == 8 || inchar == 12) {
-          CurrentFileWizState = WIZ0_;
-          newState = true;
+          FILEWIZ_INIT();
           break;
         }
         else if (inchar >= '1' && inchar <= '4') {
@@ -624,7 +624,6 @@ void einkHandler_FILEWIZ() {
         display.drawBitmap(0, 0, fileWizardallArray[0], 320, 218, GxEPD_BLACK);
 
         // DRAW FILE LIST
-
         // TODO: Replace this with displaying the 10 most recent files from SDMMC_META
         keypad.disableInterrupts();
         SD().listDir(SD_MMC, "/notes");
@@ -635,7 +634,8 @@ void einkHandler_FILEWIZ() {
           display.print(SD().getFilesListIndex(i));
         }
 
-        EINK().refresh();
+        //EINK().refresh();
+        EINK().multiPassRefresh(2);
       }
       break;
     case WIZ1_:
@@ -647,7 +647,8 @@ void einkHandler_FILEWIZ() {
         EINK().drawStatusBar("- " + SD().getWorkingFile());
         display.drawBitmap(0, 0, fileWizardallArray[1], 320, 218, GxEPD_BLACK);
 
-        EINK().refresh();
+        //EINK().refresh();
+        EINK().multiPassRefresh(2);
       }
       break;
     case WIZ1_YN:
