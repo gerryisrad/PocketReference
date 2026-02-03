@@ -8,6 +8,9 @@
 #include <pocketmage.h>
 #include <config.h> // for FULL_REFRESH_AFTER
 #include <SD_MMC.h>
+#include <SD.h>
+#include <SPI.h>
+
 
 static constexpr const char* TAG = "SD";
 

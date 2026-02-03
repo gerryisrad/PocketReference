@@ -4,6 +4,8 @@
 // LIBRARIES
 #include <USBMSC.h>
 #include <SD_MMC.h>
+#include <SD.h>
+#include <SPI.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <pocketmage.h>

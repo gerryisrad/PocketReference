@@ -11,6 +11,8 @@
 #include <config.h>
 #include <RTClib.h>
 #include <SD_MMC.h>
+#include <SD.h>
+#include <SPI.h>
 #include <Preferences.h>
 #include <esp_log.h>
 #include "esp_partition.h"
