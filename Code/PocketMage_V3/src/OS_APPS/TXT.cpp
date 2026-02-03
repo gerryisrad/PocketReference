@@ -19,7 +19,7 @@ static volatile bool doFull = false;
 
 
 void TXT_INIT_OLD() {
-  if (PM_SD().getEditingFile() != "") PM_SD().loadFile();
+  if (PM_SDMMC().getEditingFile() != "") PM_SDMMC().loadFile();
   CurrentAppState = TXT;
   CurrentTXTState = TXT_;
   KB().setKeyboardState(NORMAL);
@@ -112,8 +112,8 @@ void processKB_TXT_OLD() {
         //SAVE Recieved
         else if (inchar == 6) {
           //File exists, save normally
-          if (PM_SD().getEditingFile() != "" && PM_SD().getEditingFile() != "-") {
-            PM_SD().saveFile();
+          if (PM_SDMMC().getEditingFile() != "" && PM_SDMMC().getEditingFile() != "-") {
+            PM_SDMMC().saveFile();
             KB().setKeyboardState(NORMAL);
             newLineAdded = true;
           }
@@ -128,7 +128,7 @@ void processKB_TXT_OLD() {
         }
         //LOAD Recieved
         else if (inchar == 5) {
-          PM_SD().loadFile();
+          PM_SDMMC().loadFile();
           KB().setKeyboardState(NORMAL);
           newLineAdded = true;
         }
@@ -212,9 +212,9 @@ void processKB_TXT_OLD() {
         else if (inchar >= '0' && inchar <= '9'){
           int fileIndex = (inchar == '0') ? 10 : (inchar - '0');
           //Edit a new file
-          if (PM_SD().getFilesListIndex(fileIndex - 1) != PM_SD().getEditingFile()) { 
+          if (PM_SDMMC().getFilesListIndex(fileIndex - 1) != PM_SDMMC().getEditingFile()) { 
             //Selected file does not exist, create a new one
-            if (PM_SD().getFilesListIndex(fileIndex - 1) == "-") {
+            if (PM_SDMMC().getFilesListIndex(fileIndex - 1) == "-") {
               CurrentTXTState = WIZ3;
               EINK().setFullRefreshAfter(FULL_REFRESH_AFTER + 1);
               newState = true;
@@ -222,8 +222,8 @@ void processKB_TXT_OLD() {
             }
             //Selected file exists, prompt to save current file
             else {      
-              prevEditingFile = PM_SD().getEditingFile();
-              PM_SD().setEditingFile(PM_SD().getFilesListIndex(fileIndex - 1));      
+              prevEditingFile = PM_SDMMC().getEditingFile();
+              PM_SDMMC().setEditingFile(PM_SDMMC().getFilesListIndex(fileIndex - 1));      
               CurrentTXTState = WIZ1;
               EINK().setFullRefreshAfter(FULL_REFRESH_AFTER + 1);
               newState = true;
@@ -276,11 +276,11 @@ void processKB_TXT_OLD() {
             //File to be saved exists
             else {
               //Save current file
-              PM_SD().saveFile();
+              PM_SDMMC().saveFile();
 
               delay(200);
               //Load new file
-              PM_SD().loadFile();
+              PM_SDMMC().loadFile();
               //Return to TXT
               CurrentTXTState = TXT_;
               KB().setKeyboardState(NORMAL);
@@ -293,7 +293,7 @@ void processKB_TXT_OLD() {
           //NO  (don't save current file)
           else if (numSelect == 2) {
             //Just load new file
-            PM_SD().loadFile();
+            PM_SDMMC().loadFile();
             //Return to TXT
             CurrentTXTState = TXT_;
             KB().setKeyboardState(NORMAL);
@@ -354,11 +354,11 @@ void processKB_TXT_OLD() {
           prevEditingFile = "/" + currentWord + ".txt";
 
           //Save the file
-          PM_SD().saveFile();
+          PM_SDMMC().saveFile();
 
           delay(200);
           //Load new file
-          PM_SD().loadFile();
+          PM_SDMMC().loadFile();
 
           keypad.enableInterrupts();
 
@@ -426,7 +426,7 @@ void processKB_TXT_OLD() {
           prevEditingFile = "/" + currentWord + ".txt";
 
           //Save the file
-          PM_SD().saveFile();
+          PM_SDMMC().saveFile();
           //Ask to save prev file
           
           //Return to TXT_
@@ -549,12 +549,12 @@ void einkHandler_TXT_OLD() {
         display.drawBitmap(60,0,fileWizLiteallArray[0],200,218, GxEPD_BLACK);
 
         keypad.disableInterrupts();
-        PM_SD().listDir(SD_MMC, "/");
+        PM_SDMMC().listDir(SD_MMC, "/");
         keypad.enableInterrupts();
 
         for (int i = 0; i < MAX_FILES; i++) {
           display.setCursor(88, 54+(17*i));
-          display.print(PM_SD().getFilesListIndex(i));
+          display.print(PM_SDMMC().getFilesListIndex(i));
         }
 
         EINK().refresh();
@@ -617,7 +617,7 @@ void einkHandler_TXT_OLD() {
         display.drawBitmap(60,0,fontfont0,200,218, GxEPD_BLACK);
 
         keypad.disableInterrupts();
-        PM_SD().listDir(SD_MMC, "/");
+        PM_SDMMC().listDir(SD_MMC, "/");
         keypad.enableInterrupts();
 
         for (int i = 0; i < 7; i++) {

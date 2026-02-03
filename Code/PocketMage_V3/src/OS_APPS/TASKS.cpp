@@ -41,7 +41,7 @@ void updateTasksFile() {
   pocketmage::setCpuSpeed(240);
   delay(50);
   // Clear the existing tasks file first
-  PM_SD().delFile("/sys/tasks.txt");
+  PM_SDMMC().delFile("/sys/tasks.txt");
 
   // Iterate through the tasks vector and append each task to the file
   for (size_t i = 0; i < tasks.size(); i++) {
@@ -49,7 +49,7 @@ void updateTasksFile() {
     String taskInfo = tasks[i][0] + "|" + tasks[i][1] + "|" + tasks[i][2] + "|" + tasks[i][3];
     
     // Append the task info to the file
-    PM_SD().appendToFile("/sys/tasks.txt", taskInfo);
+    PM_SDMMC().appendToFile("/sys/tasks.txt", taskInfo);
   }
 
   if (SAVE_POWER) pocketmage::setCpuSpeed(POWER_SAVE_FREQ);

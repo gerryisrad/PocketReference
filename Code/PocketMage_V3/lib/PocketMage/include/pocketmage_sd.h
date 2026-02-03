@@ -15,9 +15,119 @@ class PocketmageOled;
 class PocketmageEink;
 
 // ===================== SD CLASS =====================
-class PocketmageSD {
+class PocketmageSDAUTO {
 public:
-  explicit PocketmageSD() {}
+  explicit PocketmageSDAUTO() {}
+
+  void saveFile();
+  void writeMetadata(const String& path);
+  void loadFile(bool showOLED = true);
+  void delFile(String fileName);
+  void deleteMetadata(String path);
+  void renFile(String oldFile, String newFile);
+  void renMetadata(String oldPath, String newPath);
+  void copyFile(String oldFile, String newFile);
+  void appendToFile(String path, String inText);
+
+  // Getters / Setters
+  bool getNoSD()  {return noSD_;}
+  void setNoSD(bool in) {noSD_ = in;}
+
+  String getWorkingFile()  {return workingFile_;}
+  void setWorkingFile(String in) {workingFile_ = in;}
+
+  String getEditingFile()  {return editingFile_;}
+  void setEditingFile(String in) {editingFile_ = in;}
+
+  String getFilesListIndex(int index) {return filesList_[index];}
+  void setFilesListIndex(int index, String content) {filesList_[index] = content;}
+
+  // low level methods  To Do: remove arguments for fs::FS &fs and reference internal fs::FS* instead
+  void listDir(fs::FS &fs, const char *dirname);
+  void readFile(fs::FS &fs, const char *path);
+  String readFileToString(fs::FS &fs, const char *path);
+  void writeFile(fs::FS &fs, const char *path, const char *message);
+  void appendFile(fs::FS &fs, const char *path, const char *message);
+  void renameFile(fs::FS &fs, const char *path1, const char *path2);
+  void deleteFile(fs::FS &fs, const char *path);
+  // Read a binary file fully into a buffer
+  bool readBinaryFile(const char* path, uint8_t* buf, size_t len);
+  // Convenience: read file size
+  size_t getFileSize(const char* path);
+
+private:
+
+  static constexpr const char*  tag               = "MAGE_SD";
+
+  String editingFile_ = "";
+  String filesList_[MAX_FILES];
+  String workingFile_ = "";
+
+  uint8_t                       fileIndex_        = 0;
+  String                        excludedFiles_[3] = { "/temp.txt", "/settings.txt", "/tasks.txt" };
+
+  // Flags / counters
+  bool                          noSD_              = false;
+};
+
+class PocketmageSDMMC {
+public:
+  explicit PocketmageSDMMC() {}
+
+  void saveFile();
+  void writeMetadata(const String& path);
+  void loadFile(bool showOLED = true);
+  void delFile(String fileName);
+  void deleteMetadata(String path);
+  void renFile(String oldFile, String newFile);
+  void renMetadata(String oldPath, String newPath);
+  void copyFile(String oldFile, String newFile);
+  void appendToFile(String path, String inText);
+
+  // Getters / Setters
+  bool getNoSD()  {return noSD_;}
+  void setNoSD(bool in) {noSD_ = in;}
+
+  String getWorkingFile()  {return workingFile_;}
+  void setWorkingFile(String in) {workingFile_ = in;}
+
+  String getEditingFile()  {return editingFile_;}
+  void setEditingFile(String in) {editingFile_ = in;}
+
+  String getFilesListIndex(int index) {return filesList_[index];}
+  void setFilesListIndex(int index, String content) {filesList_[index] = content;}
+
+  // low level methods  To Do: remove arguments for fs::FS &fs and reference internal fs::FS* instead
+  void listDir(fs::FS &fs, const char *dirname);
+  void readFile(fs::FS &fs, const char *path);
+  String readFileToString(fs::FS &fs, const char *path);
+  void writeFile(fs::FS &fs, const char *path, const char *message);
+  void appendFile(fs::FS &fs, const char *path, const char *message);
+  void renameFile(fs::FS &fs, const char *path1, const char *path2);
+  void deleteFile(fs::FS &fs, const char *path);
+  // Read a binary file fully into a buffer
+  bool readBinaryFile(const char* path, uint8_t* buf, size_t len);
+  // Convenience: read file size
+  size_t getFileSize(const char* path);
+
+private:
+
+  static constexpr const char*  tag               = "MAGE_SD";
+
+  String editingFile_ = "";
+  String filesList_[MAX_FILES];
+  String workingFile_ = "";
+
+  uint8_t                       fileIndex_        = 0;
+  String                        excludedFiles_[3] = { "/temp.txt", "/settings.txt", "/tasks.txt" };
+
+  // Flags / counters
+  bool                          noSD_              = false;
+};
+
+class PocketmageSDSPI {
+public:
+  explicit PocketmageSDSPI() {}
 
   void saveFile();
   void writeMetadata(const String& path);
@@ -71,4 +181,5 @@ private:
 };
 
 void setupSD();
-PocketmageSD& PM_SD();
+PocketmageSDMMC& PM_SDMMC();
+PocketmageSDSPI& PM_SDSPI();

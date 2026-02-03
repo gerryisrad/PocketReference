@@ -67,5 +67,6 @@ extern bool ALLOW_NO_MICROSD;    // Allow running without SD card
 extern bool HOME_ON_BOOT;        // Start home app on boot
 extern int OLED_BRIGHTNESS;      // OLED brightness (0-255)
 extern int OLED_MAX_FPS;         // OLED max FPS
+extern bool SD_SPI_COMPATIBILITY;
 
 #endif

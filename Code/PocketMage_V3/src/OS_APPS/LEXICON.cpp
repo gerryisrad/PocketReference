@@ -99,7 +99,7 @@ void loadDefinitions(String input) {
   LexQuery query = parseLexQuery(input);
   String word = query.word;
 
-  if (word.length() == 0 || PM_SD().getNoSD()) {
+  if (word.length() == 0 || PM_SDMMC().getNoSD()) {
     SDActive = false;
     if (SAVE_POWER)
       pocketmage::setCpuSpeed(POWER_SAVE_FREQ);

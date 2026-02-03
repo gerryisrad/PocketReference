@@ -1075,7 +1075,7 @@ void loadMarkdownFile(const String& path) {
     return;
   }
 
-  if (PM_SD().getNoSD()) {
+  if (PM_SDMMC().getNoSD()) {
     OLED().oledWord("LOAD FAILED - No SD!");
     delay(5000);
     return;
@@ -1177,7 +1177,7 @@ void loadMarkdownFile(const String& path) {
 }
 
 void saveMarkdownFile(const String& path) {
-  if (PM_SD().getNoSD()) {
+  if (PM_SDMMC().getNoSD()) {
     OLED().oledWord("SAVE FAILED - No SD!");
     delay(3000);
     return;
@@ -1228,8 +1228,8 @@ void saveMarkdownFile(const String& path) {
   file.close();
 
   // Save metadata
-  PM_SD().writeMetadata(savePath);
-  PM_SD().setEditingFile(savePath);
+  PM_SDMMC().writeMetadata(savePath);
+  PM_SDMMC().setEditingFile(savePath);
 
   OLED().oledWord("Saved: " + savePath);
   delay(1000);
@@ -1240,7 +1240,7 @@ void saveMarkdownFile(const String& path) {
 }
 
 void newMarkdownFile(const String& path) {
-  if (PM_SD().getNoSD()) {
+  if (PM_SDMMC().getNoSD()) {
     OLED().oledWord("SAVE FAILED - No SD!");
     delay(3000);
     return;
@@ -1271,8 +1271,8 @@ void newMarkdownFile(const String& path) {
   file.close();
 
   // Save metadata
-  PM_SD().writeMetadata(savePath);
-  PM_SD().setEditingFile(savePath);
+  PM_SDMMC().writeMetadata(savePath);
+  PM_SDMMC().setEditingFile(savePath);
 
   OLED().oledWord("Created: " + savePath);
   delay(1000);
@@ -1583,7 +1583,7 @@ void editAppend(char inchar) {
   }
   // SAVE Recieved
   else if (inchar == 6 && CurrentTXTState_NEW != JOURNAL_MODE) {
-    String savePath = PM_SD().getEditingFile();
+    String savePath = PM_SDMMC().getEditingFile();
     if (savePath == "" || savePath == "-" || savePath == "/temp.txt") {
       KB().setKeyboardState(NORMAL);
       CurrentTXTState_NEW = SAVE_AS;
@@ -1786,7 +1786,7 @@ void initFonts() {
 void TXT_INIT() {
   initFonts();
 
-  loadMarkdownFile(PM_SD().getEditingFile());
+  loadMarkdownFile(PM_SDMMC().getEditingFile());
 
   setFontStyle(serif);
 
@@ -2016,7 +2016,7 @@ void processKB_TXT_NEW() {
         if (outPath.endsWith(".txt") || outPath.endsWith(".md")) {
           if (!outPath.startsWith("/")) outPath = "/" + outPath;
           loadMarkdownFile(outPath);
-          PM_SD().setEditingFile(outPath);
+          PM_SDMMC().setEditingFile(outPath);
           CurrentTXTState_NEW = TXT_;
           updateScreen = true;
         } else {
