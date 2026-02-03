@@ -2,8 +2,8 @@
 #include "sdmmc_cmd.h"
 
 // ===================== SPI BUSSES =====================
-SPIClass sdSPI(1);
-SPIClass screenSPI(2);
+SPIClass *vspi = NULL;
+SPIClass *hspi = NULL;
 
 // ===================== SYSTEM STATE =====================
 Preferences prefs;                       // NVS preferences // note add power button logic in app + prefs to immediate sleep 

@@ -13,8 +13,8 @@
 #include <assets.h> // OTA_APP: remove
 
 // ===================== SPI BUSSES =====================
-extern SPIClass sdSPI;
-extern SPIClass screenSPI;
+extern SPIClass *vspi;
+extern SPIClass *hspi;
 
 // ===================== SYSTEM STATE =====================
 extern Preferences prefs;                       // NVS preferencesv

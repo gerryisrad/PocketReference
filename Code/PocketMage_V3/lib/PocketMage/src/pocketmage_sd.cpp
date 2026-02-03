@@ -154,8 +154,10 @@ void setupSD() {
   else {
       pocketmage::setCpuSpeed(240);
 
-      sdSPI.begin(SD_CLK, SD_MISO, SD_MOSI, SD_CS);
-      if (!SD.begin(SD_CS, sdSPI, 40000000)) { // adjust SPI frequency as needed
+      hspi = new SPIClass(HSPI);
+      hspi->begin(SD_CLK, SD_MISO, SD_MOSI, SD_CS);
+      pinMode(hspi->pinSS(), OUTPUT);  //HSPI SS
+      if (!SD.begin(SD_CS, *hspi, 40000000)) { // adjust SPI frequency as needed
           ESP_LOGE(TAG, "SPI SD Mount Failed");
           OLED().oledWord("SPI SD Not Detected!", false, false);
           delay(5000);
