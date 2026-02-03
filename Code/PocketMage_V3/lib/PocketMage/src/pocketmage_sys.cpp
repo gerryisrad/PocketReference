@@ -155,7 +155,7 @@ namespace pocketmage {
         // Save last state
         prefs.begin("PocketMage", false);
         prefs.putInt("CurrentAppState", static_cast<int>(CurrentAppState));
-        prefs.putString("editingFile", PM_SDMMC().getEditingFile());
+        prefs.putString("editingFile", PM_SDAUTO().getEditingFile());
 				prefs.putBool("Seamless_Reboot", false);
         prefs.end();
         // Sleep the ESP32

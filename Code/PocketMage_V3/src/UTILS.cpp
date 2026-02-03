@@ -60,7 +60,7 @@ void checkTimeout() {
                 // OTA_APP skip TXT case
                 #if !OTA_APP
                 case TXT:
-                if (SLEEPMODE == "TEXT" && PM_SDMMC().getEditingFile() != "" && !OTA_APP) {
+                if (SLEEPMODE == "TEXT" && PM_SDAUTO().getEditingFile() != "" && !OTA_APP) {
                     /*
                     EINK().setFullRefreshAfter(FULL_REFRESH_AFTER + 1);
                     display.setFullWindow();
@@ -109,7 +109,7 @@ void checkTimeout() {
 
         prefs.begin("PocketMage", false);
         prefs.putInt("CurrentAppState", static_cast<int>(CurrentAppState));
-        prefs.putString("editingFile", PM_SDMMC().getEditingFile());
+        prefs.putString("editingFile", PM_SDAUTO().getEditingFile());
         prefs.end();
 
         CurrentAppState = HOME;
@@ -135,7 +135,7 @@ void checkTimeout() {
             switch (CurrentAppState) {
                 // OTA_APP skip TXT case
                 case TXT:
-                if (SLEEPMODE == "TEXT" && PM_SDMMC().getEditingFile() != "" && !OTA_APP) {
+                if (SLEEPMODE == "TEXT" && PM_SDAUTO().getEditingFile() != "" && !OTA_APP) {
                     ESP_LOGE(TAG,"text sleep mode");   
                     EINK().setFullRefreshAfter(FULL_REFRESH_AFTER + 1);
                     display.setFullWindow();
@@ -147,7 +147,7 @@ void checkTimeout() {
                     display.setCursor(4, display.height() - 6);
                     //display.drawBitmap(display.width() - 30, display.height() - 20, KBStatusallArray[6], 30,
                     //                20, GxEPD_BLACK);
-                    EINK().statusBar(PM_SDMMC().getEditingFile(), true);
+                    EINK().statusBar(PM_SDAUTO().getEditingFile(), true);
 
                     display.fillRect(320 - 86, 240 - 52, 87, 52, GxEPD_WHITE);
                     display.drawBitmap(320 - 86, 240 - 52, sleep1, 87, 52, GxEPD_BLACK);
@@ -200,7 +200,7 @@ void loadState(bool changeState) {
     SHOW_YEAR = prefs.getBool("SHOW_YEAR", true);
     SAVE_POWER = prefs.getBool("SAVE_POWER", true);
     ALLOW_NO_MICROSD = prefs.getBool("ALLOW_NO_SD", true);
-    PM_SDMMC().setEditingFile(prefs.getString("editingFile", ""));
+    PM_SDAUTO().setEditingFile(prefs.getString("editingFile", ""));
     HOME_ON_BOOT = prefs.getBool("HOME_ON_BOOT", false);
     OLED_BRIGHTNESS = prefs.getInt("OLED_BRIGHTNESS", 255);
     OLED_MAX_FPS = prefs.getInt("OLED_MAX_FPS", 30);
@@ -370,11 +370,11 @@ void saveEditingFile() {
     if (!OTA_APP){
         OLED().oledWord("Saving Work");
         //pocketmage::file::saveFile();
-        String savePath = PM_SDMMC().getEditingFile();
+        String savePath = PM_SDAUTO().getEditingFile();
         if (savePath != "" && savePath != "-" && savePath != "/temp.txt" && fileLoaded) {
             if (!savePath.startsWith("/")) savePath = "/" + savePath;
             ESP_LOGE(TAG, "Saving MarkdownFile");
-            saveMarkdownFile(PM_SDMMC().getEditingFile());
+            saveMarkdownFile(PM_SDAUTO().getEditingFile());
             ESP_LOGE(TAG, "Done saving MarkdownFile");
         }
     } 

@@ -49,7 +49,7 @@ void USBAppShutdown() {
     if (ALLOW_NO_MICROSD) {
       OLED().oledWord("All Work Will Be Lost!");
       delay(5000);
-      PM_SDMMC().setNoSD(true);
+      PM_SDAUTO().setNoSD(true);
     } else {
       OLED().oledWord("Insert SD Card and Reboot!");
       delay(5000);

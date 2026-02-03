@@ -5,7 +5,7 @@ enum JournalState {J_MENU, J_TXT};
 JournalState CurrentJournalState = J_MENU;
 
 String currentJournal = "";
-String bufferEditingFile = PM_SDMMC().getEditingFile();
+String bufferEditingFile = PM_SDAUTO().getEditingFile();
 static String currentLine = "";
 static volatile bool doFull = false;
 static int cursor_pos = 0;
@@ -16,18 +16,18 @@ void JOURNAL_INIT() {
   EINK().forceSlowFullUpdate(true);
   newState = true;
   KB().setKeyboardState(NORMAL);
-  bufferEditingFile = PM_SDMMC().getEditingFile();
+  bufferEditingFile = PM_SDAUTO().getEditingFile();
 }
 
 // File Operations
 void loadJournal() {
-  PM_SDMMC().setEditingFile(currentJournal);
-  PM_SDMMC().loadFile();
+  PM_SDAUTO().setEditingFile(currentJournal);
+  PM_SDAUTO().loadFile();
 }
 
 void saveJournal() {
-  PM_SDMMC().setEditingFile(currentJournal);
-  PM_SDMMC().saveFile();
+  PM_SDAUTO().setEditingFile(currentJournal);
+  PM_SDAUTO().saveFile();
 }
 
 String getCurrentJournal() {return currentJournal;}

@@ -14,6 +14,11 @@
 class PocketmageOled;
 class PocketmageEink;
 
+static bool noSD = false;
+static String editingFile = "";
+static String workingFile = "";
+static String filesList[10];
+
 // ===================== SD CLASS =====================
 class PocketmageSDAUTO {
 public:
@@ -30,17 +35,17 @@ public:
   void appendToFile(String path, String inText);
 
   // Getters / Setters
-  bool getNoSD()  {return noSD_;}
-  void setNoSD(bool in) {noSD_ = in;}
+  bool getNoSD()  {return noSD;}
+  void setNoSD(bool in) {noSD = in;}
 
-  String getWorkingFile()  {return workingFile_;}
-  void setWorkingFile(String in) {workingFile_ = in;}
+  String getWorkingFile()  {return workingFile;}
+  void setWorkingFile(String in) {workingFile = in;}
 
-  String getEditingFile()  {return editingFile_;}
-  void setEditingFile(String in) {editingFile_ = in;}
+  String getEditingFile()  {return editingFile;}
+  void setEditingFile(String in) {editingFile = in;}
 
-  String getFilesListIndex(int index) {return filesList_[index];}
-  void setFilesListIndex(int index, String content) {filesList_[index] = content;}
+  String getFilesListIndex(int index) {return filesList[index];}
+  void setFilesListIndex(int index, String content) {filesList[index] = content;}
 
   // low level methods  To Do: remove arguments for fs::FS &fs and reference internal fs::FS* instead
   void listDir(fs::FS &fs, const char *dirname);
@@ -85,17 +90,17 @@ public:
   void appendToFile(String path, String inText);
 
   // Getters / Setters
-  bool getNoSD()  {return noSD_;}
-  void setNoSD(bool in) {noSD_ = in;}
+  bool getNoSD()  {return noSD;}
+  void setNoSD(bool in) {noSD = in;}
 
-  String getWorkingFile()  {return workingFile_;}
-  void setWorkingFile(String in) {workingFile_ = in;}
+  String getWorkingFile()  {return workingFile;}
+  void setWorkingFile(String in) {workingFile = in;}
 
-  String getEditingFile()  {return editingFile_;}
-  void setEditingFile(String in) {editingFile_ = in;}
+  String getEditingFile()  {return editingFile;}
+  void setEditingFile(String in) {editingFile = in;}
 
-  String getFilesListIndex(int index) {return filesList_[index];}
-  void setFilesListIndex(int index, String content) {filesList_[index] = content;}
+  String getFilesListIndex(int index) {return filesList[index];}
+  void setFilesListIndex(int index, String content) {filesList[index] = content;}
 
   // low level methods  To Do: remove arguments for fs::FS &fs and reference internal fs::FS* instead
   void listDir(fs::FS &fs, const char *dirname);
@@ -140,17 +145,17 @@ public:
   void appendToFile(String path, String inText);
 
   // Getters / Setters
-  bool getNoSD()  {return noSD_;}
-  void setNoSD(bool in) {noSD_ = in;}
+  bool getNoSD()  {return noSD;}
+  void setNoSD(bool in) {noSD = in;}
 
-  String getWorkingFile()  {return workingFile_;}
-  void setWorkingFile(String in) {workingFile_ = in;}
+  String getWorkingFile()  {return workingFile;}
+  void setWorkingFile(String in) {workingFile = in;}
 
-  String getEditingFile()  {return editingFile_;}
-  void setEditingFile(String in) {editingFile_ = in;}
+  String getEditingFile()  {return editingFile;}
+  void setEditingFile(String in) {editingFile = in;}
 
-  String getFilesListIndex(int index) {return filesList_[index];}
-  void setFilesListIndex(int index, String content) {filesList_[index] = content;}
+  String getFilesListIndex(int index) {return filesList[index];}
+  void setFilesListIndex(int index, String content) {filesList[index] = content;}
 
   // low level methods  To Do: remove arguments for fs::FS &fs and reference internal fs::FS* instead
   void listDir(fs::FS &fs, const char *dirname);
@@ -181,5 +186,6 @@ private:
 };
 
 void setupSD();
+PocketmageSDAUTO& PM_SDAUTO();
 PocketmageSDMMC& PM_SDMMC();
 PocketmageSDSPI& PM_SDSPI();

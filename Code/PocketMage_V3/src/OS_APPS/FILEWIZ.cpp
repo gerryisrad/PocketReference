@@ -305,9 +305,9 @@ String fileWizardMini(bool allowRecentSelect, String rootDir) {
     else if (allowRecentSelect && (inchar >= '0' && inchar <= '9')) {
       int fileIndex = (inchar == '0') ? 10 : (inchar - '0');
       // SET WORKING FILE
-      String selectedFile = PM_SDMMC().getFilesListIndex(fileIndex - 1);
+      String selectedFile = PM_SDAUTO().getFilesListIndex(fileIndex - 1);
       if (selectedFile != "-" && selectedFile != "") {
-        PM_SDMMC().setWorkingFile(selectedFile);
+        PM_SDAUTO().setWorkingFile(selectedFile);
         // GO TO WIZ1_
         CurrentFileWizState = WIZ1_;
         newState = true;
@@ -346,7 +346,7 @@ void processKB_FILEWIZ() {
       else if (outPath != "") {
         // Open file
         if (outPath != "-" && outPath != "") {
-          PM_SDMMC().setWorkingFile(outPath);
+          PM_SDAUTO().setWorkingFile(outPath);
           // GO TO WIZ1_
           CurrentFileWizState = WIZ1_;
           newState = true;
@@ -419,7 +419,7 @@ void processKB_FILEWIZ() {
         // Y RECIEVED
         else if (inchar == 'y' || inchar == 'Y') {
           // DELETE FILE
-          PM_SDMMC().delFile(PM_SDMMC().getWorkingFile());
+          PM_SDAUTO().delFile(PM_SDAUTO().getWorkingFile());
           
           // RETURN TO FILE WIZ HOME
           refreshFiles = true;
@@ -498,7 +498,7 @@ void processKB_FILEWIZ() {
         else if (inchar == 13) {      
           // RENAME FILE                    
           String newName = "/" + currentWord + ".txt";
-          PM_SDMMC().renFile(PM_SDMMC().getWorkingFile(), newName);
+          PM_SDAUTO().renFile(PM_SDAUTO().getWorkingFile(), newName);
 
           // RETURN TO WIZ0
           refreshFiles = true;
@@ -580,7 +580,7 @@ void processKB_FILEWIZ() {
         else if (inchar == 13) {      
           // Copy FILE                    
           String newName = "/" + currentWord + ".txt";
-          PM_SDMMC().copyFile(PM_SDMMC().getWorkingFile(), newName);
+          PM_SDAUTO().copyFile(PM_SDAUTO().getWorkingFile(), newName);
 
           // RETURN TO WIZ0
           refreshFiles = true;
@@ -626,12 +626,12 @@ void einkHandler_FILEWIZ() {
         // DRAW FILE LIST
         // TODO: Replace this with displaying the 10 most recent files from SDMMC_META
         keypad.disableInterrupts();
-        PM_SDMMC().listDir(SD_MMC, "/notes");
+        PM_SDAUTO().listDir(SD_MMC, "/notes");
         keypad.enableInterrupts();
 
         for (int i = 0; i < MAX_FILES; i++) {
           display.setCursor(30, 54+(17*i));
-          display.print(PM_SDMMC().getFilesListIndex(i));
+          display.print(PM_SDAUTO().getFilesListIndex(i));
         }
 
         //EINK().refresh();
@@ -644,7 +644,7 @@ void einkHandler_FILEWIZ() {
         EINK().resetDisplay();
 
         // DRAW APP
-        EINK().drawStatusBar("- " + PM_SDMMC().getWorkingFile());
+        EINK().drawStatusBar("- " + PM_SDAUTO().getWorkingFile());
         display.drawBitmap(0, 0, fileWizardallArray[1], 320, 218, GxEPD_BLACK);
 
         //EINK().refresh();
@@ -657,7 +657,7 @@ void einkHandler_FILEWIZ() {
         EINK().resetDisplay();
 
         // DRAW APP
-        EINK().drawStatusBar("DEL:" + PM_SDMMC().getWorkingFile() + "?(Y/N)");
+        EINK().drawStatusBar("DEL:" + PM_SDAUTO().getWorkingFile() + "?(Y/N)");
         display.drawBitmap(0, 0, fileWizardallArray[1], 320, 218, GxEPD_BLACK);
 
         EINK().refresh();
