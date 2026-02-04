@@ -4,6 +4,7 @@
 // ===================== SPI BUSSES =====================
 SPIClass *vspi = NULL;
 SPIClass *hspi = NULL;
+fs::FS* global_fs = nullptr;
 
 // ===================== SYSTEM STATE =====================
 Preferences prefs;                       // NVS preferences // note add power button logic in app + prefs to immediate sleep 

@@ -68,7 +68,7 @@ void updateTaskArray() {
   SDActive = true;
   pocketmage::setCpuSpeed(240);
   delay(50);
-  File file = SD_MMC.open("/sys/tasks.txt", "r"); // Open the text file in read mode
+  File file = global_fs->open("/sys/tasks.txt", "r"); // Open the text file in read mode
   if (!file) {
     ESP_LOGE(TAG, "Failed to open file to read: %s", file.path());
     return;

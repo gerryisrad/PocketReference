@@ -58,84 +58,84 @@ void drawJMENU() {
     else dayCode = String(i);
     
     String fileCode = "/journal/" + year + "01" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7*(i-1)), 50, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7*(i-1)), 50, 4, 4, GxEPD_BLACK);
   }
   // FEBRUARY
   int febDays = isLeapYear(year.toInt()) ? 29 : 28;
   for (int i = 1; i <= febDays; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "02" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 59, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 59, 4, 4, GxEPD_BLACK);
   }
 
   // MARCH
   for (int i = 1; i <= 31; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "03" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 68, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 68, 4, 4, GxEPD_BLACK);
   }
 
   // APRIL
   for (int i = 1; i <= 30; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "04" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 77, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 77, 4, 4, GxEPD_BLACK);
   }
 
   // MAY
   for (int i = 1; i <= 31; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "05" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 86, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 86, 4, 4, GxEPD_BLACK);
   }
 
   // JUNE
   for (int i = 1; i <= 30; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "06" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 95, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 95, 4, 4, GxEPD_BLACK);
   }
 
   // JULY
   for (int i = 1; i <= 31; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "07" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 104, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 104, 4, 4, GxEPD_BLACK);
   }
 
   // AUGUST
   for (int i = 1; i <= 31; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "08" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 113, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 113, 4, 4, GxEPD_BLACK);
   }
 
   // SEPTEMBER
   for (int i = 1; i <= 30; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "09" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 122, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 122, 4, 4, GxEPD_BLACK);
   }
 
   // OCTOBER
   for (int i = 1; i <= 31; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "10" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 131, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 131, 4, 4, GxEPD_BLACK);
   }
 
   // NOVEMBER
   for (int i = 1; i <= 30; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "11" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 140, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 140, 4, 4, GxEPD_BLACK);
   }
 
   // DECEMBER
   for (int i = 1; i <= 31; i++) {
     String dayCode = (i < 10) ? "0" + String(i) : String(i);
     String fileCode = "/journal/" + year + "12" + dayCode + ".txt";
-    if (SD_MMC.exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 149, 4, 4, GxEPD_BLACK);
+    if (global_fs->exists(fileCode)) display.fillRect(91 + (7 * (i - 1)), 149, 4, 4, GxEPD_BLACK);
   }
 
   if (SAVE_POWER) pocketmage::setCpuSpeed(POWER_SAVE_FREQ);
@@ -163,8 +163,8 @@ void JMENUCommand(String command) {
     String fileName = "/journal/" + String(now.year()) + monthStr + dayStr + ".txt";
     
     // If file doesn't exist, create it
-    if (!SD_MMC.exists(fileName)) {
-      File f = SD_MMC.open(fileName, FILE_WRITE);
+    if (!global_fs->exists(fileName)) {
+      File f = global_fs->open(fileName, FILE_WRITE);
       if (f) f.close();
     }
 
@@ -182,8 +182,8 @@ void JMENUCommand(String command) {
   else if (command.length() == 8 && command.toInt() > 0) {
     String fileName = "/journal/" + command + ".txt";
 
-    if (!SD_MMC.exists(fileName)) {
-      File f = SD_MMC.open(fileName, FILE_WRITE);
+    if (!global_fs->exists(fileName)) {
+      File f = global_fs->open(fileName, FILE_WRITE);
       if (f) f.close();
     }
 
@@ -224,8 +224,8 @@ void JMENUCommand(String command) {
       String d = (day < 10) ? "0" + String(day) : String(day);
       String fileName = "/journal/" + year + m + d + ".txt";
 
-      if (!SD_MMC.exists(fileName)) {
-        File f = SD_MMC.open(fileName, FILE_WRITE);
+      if (!global_fs->exists(fileName)) {
+        File f = global_fs->open(fileName, FILE_WRITE);
         if (f) f.close();
       }
 

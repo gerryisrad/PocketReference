@@ -79,7 +79,7 @@ void LEXICON_INIT() {
   // Verify that dict is installed
   pocketmage::setCpuSpeed(240);
   delay(50);
-  if (!SD_MMC.exists("/dict/A.txt")) {
+  if (!global_fs->exists("/dict/A.txt")) {
     OLED().oledWord("Please install dict from GitHub!");
     delay(5000);
     pocketmage::setCpuSpeed(POWER_SAVE_FREQ);
@@ -116,7 +116,7 @@ void loadDefinitions(String input) {
 
   String filePath = "/dict/" + String((char)toupper(firstChar)) + ".txt";
 
-  File file = SD_MMC.open(filePath);
+  File file = global_fs->open(filePath);
   if (!file) {
     OLED().oledWord("Missing Dictionary!");
     delay(2000);

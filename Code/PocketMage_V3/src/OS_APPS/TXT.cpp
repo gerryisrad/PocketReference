@@ -549,7 +549,7 @@ void einkHandler_TXT_OLD() {
         display.drawBitmap(60,0,fileWizLiteallArray[0],200,218, GxEPD_BLACK);
 
         keypad.disableInterrupts();
-        PM_SDAUTO().listDir(SD_MMC, "/");
+        PM_SDAUTO().listDir(*global_fs, "/");
         keypad.enableInterrupts();
 
         for (int i = 0; i < MAX_FILES; i++) {
@@ -617,7 +617,7 @@ void einkHandler_TXT_OLD() {
         display.drawBitmap(60,0,fontfont0,200,218, GxEPD_BLACK);
 
         keypad.disableInterrupts();
-        PM_SDAUTO().listDir(SD_MMC, "/");
+        PM_SDAUTO().listDir(*global_fs, "/");
         keypad.enableInterrupts();
 
         for (int i = 0; i < 7; i++) {

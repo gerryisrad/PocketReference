@@ -15,6 +15,7 @@
 // ===================== SPI BUSSES =====================
 extern SPIClass *vspi;
 extern SPIClass *hspi;
+extern fs::FS* global_fs;
 
 // ===================== SYSTEM STATE =====================
 extern Preferences prefs;                       // NVS preferencesv

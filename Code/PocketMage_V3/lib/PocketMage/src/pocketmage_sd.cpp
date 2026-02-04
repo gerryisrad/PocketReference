@@ -54,25 +54,162 @@ void setupSD() {
     "5. Enjoy your new custom wallpapers!";
 
   static const char* GUIDE_COMMANDS =
-    "# PocketMage Keystrokes Guide\n"
-    "This is a guide on common key combinations and commands on the PocketMage PDA device. "
-    "The guide is split up into sections based on application.\n"
-    "\n"
-    "---\n"
-    "## General Keystrokes (work in almost any app)\n"
-    "- (FN) + ( < ) | Exit or back button\n"
-    "- (FN) + ( > ) | Save document\n"
-    "- (FN) + ( o ) | Clear Line\n"
-    "- (FN) + (Key) | FN layer keymapping (legends on the PCB)\n"
-    "- (SHFT) + (key) | Capital letter\n"
-    "- ( o ) OR (ENTER) | Select button\n"
-    "\n"
-    "---\n"
-    "## While Sleeping\n"
-    "... (shortened for brevity) ...\n"; // keep all content or shorten as needed
+    "# PocketMage Keystrokes Guide\n" 
+    "This is a guide on common key combinations and commands on the PocketMage PDA device. " 
+    "The guide is split up into sections based on application.\n" "\n" "---\n" 
+    "## General Keystrokes (work in almost any app)\n" 
+    "- (FN) + ( < ) | Exit or back button\n" 
+    "- (FN) + ( > ) | Save document\n" 
+    "- (FN) + ( o ) | Clear Line\n" 
+    "- (FN) + (Key) | FN layer keymapping (legends on the PCB)\n" 
+    "- (SHFT) + (key) | Capital letter\n" 
+    "- ( o ) OR (ENTER) | Select button\n" 
+    "\n" 
+    "---\n" 
+    "## While Sleeping\n" 
+    "### Bypass home and directly enter an app\n" 
+    "You can bypass the home menu and enter directly into an app and wake up with one keystroke. " 
+    "Pressing the buttons below while PocketMage is sleeping will wake the device and boot into the corresponding app.\n" 
+    "\n" 
+    "- ( SPACE ) - Return to previous app (saved state from last sleep)\n" 
+    "- ( H ) - Home\n" 
+    "- ( U ) - USB\n" 
+    "- ( F ) - Filewiz\n" 
+    "- ( T ) - Tasks\n" 
+    "- ( N ) - TXT\n" 
+    "- ( S ) - Settings\n" 
+    "- ( C ) - Calendar\n" 
+    "- ( J ) - Journal\n" 
+    "- ( D ) - Dictionary (lexicon)\n" 
+    "- ( L ) - Loader\n" 
+    "\n" 
+    "---\n" 
+    "## Home App\n" 
+    "### Entering an OS app\n" 
+    "Type an app's name to enter that app. For example, to enter calendar, type \"calendar\". " 
+    "You can type the name as it appears on the screen or use a shortcut. " "For example, typing \"cal\" also enters the calendar.\n" 
+    "\n" 
+    "### Entering a 3rd party app\n" 
+    "For 3rd party apps, type the letter of the slot that app is installed in. " 
+    "For example if you have the Calc app installed in the first app slot, type \"a\" to enter the app.\n" 
+    "\n" 
+    "### Other commands\n" 
+    "Many other commands can be done from the homescreen, including all of the settings commands " 
+    "and some other fun ones for you to discover!\n" 
+    "\n" 
+    "---\n" 
+    "## TXT App\n" 
+    "- (FN) + ( < ) | Exit app\n" 
+    "- (FN) + ( > ) | Save document\n" 
+    "- (FN) + ( o ) | Enter filesystem (loading files)\n" 
+    "- (SHFT) + ( o ) | New blank text document\n" 
+    "- (FN) + (Key) | FN layer keymapping (legends on the PCB)\n" 
+    "- (SHFT) + (key) | Capital letter\n" 
+    "- (ENTER) | Create a new line\n" 
+    "- (SHFT) + ( < ) | Change text style (body, heading, etc.)\n" 
+    "- (SHFT) + ( > ) | Change formatting (bold, italics, etc.)\n" 
+    "- Scroll Bar | Swipe up or down to scroll through the document\n" 
+    "\n" 
+    "---\n" 
+    "## FILEWIZ\n" 
+    "- (FN) + ( < ) | Exit app\n" 
+    "- ( < ) AND ( > ) | Scroll left and right\n" 
+    "- ( o ) OR (ENTER) | Select file or folder\n" 
+    "- ( 0 ) TO ( 9 ) | Select recent file\n" 
+    "- ( BKSP ) | Go back a filesystem level\n" 
+    "\n" 
+    "---\n" 
+    "## USB\n" 
+    "Plug in the PocketMage to your PC to view the files. Eject and exit the app when you're finished.\n" 
+    "- (FN) + ( < ) | Exit app\n" 
+    "\n" 
+    "---\n" 
+    "## Settings\n" 
+    "Type the setting as it appears on the screen to change it. Some examples are given below. " 
+    "Note: all settings are case-insensitive, meaning that you can type in all lowercase. " 
+    "All of these settings are also available from the home menu command bar if you memorize them.\n" 
+    "- TimeSet [HH]:[MM] -> TimeSet 15:46\n" 
+    "- DateSet YYYYMMDD -> DateSet 20251230\n" 
+    "- ShowYear [bool] -> ShowYear t\n" 
+    "- Timeout [int] -> Timeout 300\n" 
+    "- (FN) + ( < ) | Exit app\n" 
+    "\n" 
+    "---\n" 
+    "## Tasks\n" 
+    "- ( N ) | Create a new task, follow on-screen prompts\n" 
+    "- (ENTER) | Enter information into prompt\n" 
+    "- ( 0 ) TO ( 9 ) | Select task for editing\n" 
+    "- (FN) + ( < ) | Exit app\n" 
+    "\n" 
+    "---\n" 
+    "## Calendar\n" 
+    "Type commands to navigate dates or create events. All commands are case-insensitive.\n" 
+    "\n" 
+    "### Month View\n" 
+    "- jan 2025 / feb 2030 / etc. | Jump to month and year\n" 
+    "- 20251225 | Jump to exact date (YYYYMMDD)\n" 
+    "- 14 | Jump to a day in the current month\n" 
+    "- ( N ) | New event\n" 
+    "- (FN) + ( < ) | Exit app\n" 
+    "\n" 
+    "### Week View\n" 
+    "- sun, mon, tue, wed, thu, fri, sat | Jump to weekday in the viewed week\n" 
+    "- ( N ) | New event\n" 
+    "- (FN) + ( < ) | Exit app\n" 
+    "\n" 
+    "### Day View\n" 
+    "- ( N ) | New event for selected day\n" 
+    "- 1, 2, 3, ... | Open event by index\n" 
+    "- (FN) + ( < ) | Exit app\n" 
+    "\n" 
+    "### Repeating Events\n" 
+    "- no | No repeat\n" 
+    "- daily | Repeat every day\n" 
+    "- weekly xx | Repeat every week, xx is one or more of mo, tu, we, th, fr, sa, su\n" 
+    "- monthly xx | Repeat monthly, xx is the day of the month (1-31) or ordinal weekday (ex. 2tu)\n" 
+    "- yearly xx | Repeat every year, xx is month and day of the month (ex. apr22)\n" 
+    "\n" 
+    "---\n" 
+    "## Journal\n" 
+    "Type a date to open or create a journal entry. Commands are case-insensitive.\n" 
+    "- ( T ) | Open today’s journal entry\n" 
+    "- YYYYMMDD - Example: 20250314 | Open/create entry for exact date\n" 
+    "- jan 1 / feb 12 / etc. | Open/create entry for given month and day (uses current year)\n" 
+    "- (FN) + ( < ) | Exit app\n" 
+    "\n" 
+    "---\n" 
+    "## Lexicon\n" 
+    "Type a word to search the dictionary. Matches are loaded from the SD card. Commands are case-insensitive.\n" 
+    "- Type any word | Search for definitions (example: abandon)\n" 
+    "- (ENTER) | Execute search\n" 
+    "- ( < ) OR ( > ) | Previous / next definition\n" 
+    "- (FN) + ( < ) | Exit app\n" 
+    "\n" 
+    "---\n" 
+    "## App loader\n" 
+    "Manage and install .tar apps to OTA slots. Commands are case-insensitive.\n" 
+    "- A / B / C / D | Select OTA slot to edit\n" 
+    "- ( S ) | Swap app in selected slot (choose a .tar file)\n" 
+    "- ( D ) | Delete app in selected slot\n" 
+    "- (FN) + ( < ) | Exit app / return to menu\n" 
+    "- Progress Bar | Shows extraction (0–50%) and installation (50–100%) status\n" 
+    "\n" 
+    "---\n" 
+    "## Sleep Modes\n" 
+    "When on battery, save power and look at a random screensaver. " 
+    "When charging, view a clock, upcoming tasks, and weather (work in progress)\n" 
+    "### Sleep (when not plugged into usb)\n" 
+    "- sleep button to enter sleep\n" 
+    "- any key on keyboard to wake\n" 
+    "### Now-Later (when usb is plugged in)\n" 
+    "- sleep button to enter now-later\n" 
+    "- sleep button to wake\n";
 
   // ---------- SDMMC mode ----------
   if (!SD_SPI_COMPATIBILITY) {
+    // Set global filesystem
+    global_fs = &SD_MMC;
+
     pocketmage::setCpuSpeed(240);
     SD_MMC.setPins(SD_CLK, SD_CMD, SD_D0);
 
@@ -127,24 +264,24 @@ void setupSD() {
     // ---------- Filesystem setup ----------
     const char* dirs[] = {"/sys", "/notes", "/journal", "/dict", "/apps",
                           "/apps/temp", "/assets", "/assets/backgrounds"};
-    for (auto dir : dirs) if (!SD_MMC.exists(dir)) SD_MMC.mkdir(dir);
+    for (auto dir : dirs) if (!global_fs->exists(dir)) global_fs->mkdir(dir);
 
     // Create system guides
-    if (!SD_MMC.exists("/assets/backgrounds/HOWTOADDBACKGROUNDS.txt")) {
-      File f = SD_MMC.open("/assets/backgrounds/HOWTOADDBACKGROUNDS.txt", FILE_WRITE);
+    if (!global_fs->exists("/assets/backgrounds/HOWTOADDBACKGROUNDS.txt")) {
+      File f = global_fs->open("/assets/backgrounds/HOWTOADDBACKGROUNDS.txt", FILE_WRITE);
       if (f) { f.print(GUIDE_BACKGROUND); f.close(); }
     }
 
-    if (!SD_MMC.exists("/sys/COMMAND_MANUAL.txt")) {
-      File f = SD_MMC.open("/sys/COMMAND_MANUAL.txt", FILE_WRITE);
+    if (!global_fs->exists("/sys/COMMAND_MANUAL.txt")) {
+      File f = global_fs->open("/sys/COMMAND_MANUAL.txt", FILE_WRITE);
       if (f) { f.print(GUIDE_COMMANDS); f.close(); }
     }
 
     // Ensure system files exist
     const char* sysFiles[] = {"/sys/events.txt", "/sys/tasks.txt", "/sys/SDMMC_META.txt"};
     for (auto file : sysFiles) {
-      if (!SD_MMC.exists(file)) {
-        File f = SD_MMC.open(file, FILE_WRITE);
+      if (!global_fs->exists(file)) {
+        File f = global_fs->open(file, FILE_WRITE);
         if (f) f.close();
       }
     }
@@ -152,6 +289,9 @@ void setupSD() {
 
   // ---------- SDSPI mode ----------
   else {
+      // Set global filesystem
+      global_fs = &SD;
+
       pocketmage::setCpuSpeed(240);
 
       hspi = new SPIClass(HSPI);
@@ -182,24 +322,24 @@ void setupSD() {
       // ---------- Filesystem setup ----------
       const char* dirs[] = {"/sys", "/notes", "/journal", "/dict", "/apps",
                             "/apps/temp", "/assets", "/assets/backgrounds"};
-      for (auto dir : dirs) if (!SD.exists(dir)) SD.mkdir(dir);
+      for (auto dir : dirs) if (!global_fs->exists(dir)) global_fs->mkdir(dir);
 
       // Create system guides
-      if (!SD.exists("/assets/backgrounds/HOWTOADDBACKGROUNDS.txt")) {
-          File f = SD.open("/assets/backgrounds/HOWTOADDBACKGROUNDS.txt", FILE_WRITE);
+      if (!global_fs->exists("/assets/backgrounds/HOWTOADDBACKGROUNDS.txt")) {
+          File f = global_fs->open("/assets/backgrounds/HOWTOADDBACKGROUNDS.txt", FILE_WRITE);
           if (f) { f.print(GUIDE_BACKGROUND); f.close(); }
       }
 
-      if (!SD.exists("/sys/COMMAND_MANUAL.txt")) {
-          File f = SD.open("/sys/COMMAND_MANUAL.txt", FILE_WRITE);
+      if (!global_fs->exists("/sys/COMMAND_MANUAL.txt")) {
+          File f = global_fs->open("/sys/COMMAND_MANUAL.txt", FILE_WRITE);
           if (f) { f.print(GUIDE_COMMANDS); f.close(); }
       }
 
       // Ensure system files exist
       const char* sysFiles[] = {"/sys/events.txt", "/sys/tasks.txt", "/sys/SDMMC_META.txt"};
       for (auto file : sysFiles) {
-          if (!SD.exists(file)) {
-              File f = SD.open(file, FILE_WRITE);
+          if (!global_fs->exists(file)) {
+              File f = global_fs->open(file, FILE_WRITE);
               if (f) f.close();
           }
       }
@@ -329,7 +469,7 @@ void PocketmageSDMMC::writeMetadata(const String& path) {
   pocketmage::setCpuSpeed(240);
   delay(50);
 
-  File file = SD_MMC.open(path);
+  File file = global_fs->open(path);
   if (!file || file.isDirectory()) {
       OLED().oledWord("META WRITE ERR");
       delay(1000);
@@ -358,7 +498,7 @@ void PocketmageSDMMC::writeMetadata(const String& path) {
 
   const char* metaPath = SYS_METADATA_FILE;
   // Read existing entries and rebuild the file without duplicates
-  File metaFile = SD_MMC.open(metaPath, FILE_READ);
+  File metaFile = global_fs->open(metaPath, FILE_READ);
   String updatedMeta = "";
   bool replaced = false;
 
@@ -379,7 +519,7 @@ void PocketmageSDMMC::writeMetadata(const String& path) {
       updatedMeta += newEntry + "\n";
   }
   // Write back the updated metadata
-  metaFile = SD_MMC.open(metaPath, FILE_WRITE);
+  metaFile = global_fs->open(metaPath, FILE_WRITE);
   if (!metaFile) {
       ESP_LOGE(TAG, "Failed to open metadata file for writing: %s", metaPath);
       return;
@@ -460,7 +600,7 @@ void PocketmageSDMMC::deleteMetadata(String path) {
   const char* metaPath = SYS_METADATA_FILE;
 
   // Open metadata file for reading
-  File metaFile = SD_MMC.open(metaPath, FILE_READ);
+  File metaFile = global_fs->open(metaPath, FILE_READ);
   if (!metaFile) {
       ESP_LOGE(TAG, "Metadata file not found: %s", metaPath);
       return;
@@ -477,10 +617,10 @@ void PocketmageSDMMC::deleteMetadata(String path) {
   metaFile.close();
 
   // Delete the original metadata file
-  SD_MMC.remove(metaPath);
+  global_fs->remove(metaPath);
 
   // Recreate the file and write back the kept lines
-  File writeFile = SD_MMC.open(metaPath, FILE_WRITE);
+  File writeFile = global_fs->open(metaPath, FILE_WRITE);
   if (!writeFile) {
       ESP_LOGE(TAG, "Failed to recreate metadata file. %s", writeFile.path());
       return;
@@ -529,7 +669,7 @@ void PocketmageSDMMC::renMetadata(String oldPath, String newPath) {
   const char* metaPath = SYS_METADATA_FILE;
 
   // Open metadata file for reading
-  File metaFile = SD_MMC.open(metaPath, FILE_READ);
+  File metaFile = global_fs->open(metaPath, FILE_READ);
   if (!metaFile) {
       ESP_LOGE(TAG, "Metadata file not found: %s", metaPath);
       return;
@@ -557,10 +697,10 @@ void PocketmageSDMMC::renMetadata(String oldPath, String newPath) {
   metaFile.close();
 
   // Delete old metadata file
-  SD_MMC.remove(metaPath);
+  global_fs->remove(metaPath);
 
   // Recreate file and write updated lines
-  File writeFile = SD_MMC.open(metaPath, FILE_WRITE);
+  File writeFile = global_fs->open(metaPath, FILE_WRITE);
   if (!writeFile) {
       ESP_LOGE(TAG, "Failed to recreate metadata file. %s", writeFile.path());
       return;
@@ -861,7 +1001,7 @@ bool PocketmageSDMMC::readBinaryFile(const char* path, uint8_t* buf, size_t len)
   if (noTimeout)
     noTimeout = true;
     
-  File f = SD_MMC.open(path, "r");
+  File f = global_fs->open(path, "r");
   if (!f || f.isDirectory()) {
     if (noTimeout)
       noTimeout = false;
@@ -883,7 +1023,7 @@ size_t PocketmageSDMMC::getFileSize(const char* path) {
   if (noSD_)
     return 0;
 
-  File f = SD_MMC.open(path, "r");
+  File f = global_fs->open(path, "r");
   if (!f)
     return 0;
   size_t size = f.size();
@@ -934,7 +1074,7 @@ void PocketmageSDSPI::writeMetadata(const String& path) {
   pocketmage::setCpuSpeed(240);
   delay(50);
 
-  File file = SD.open(path);
+  File file = global_fs->open(path);
   if (!file || file.isDirectory()) {
     OLED().oledWord("META WRITE ERR");
     delay(1000);
@@ -967,7 +1107,7 @@ void PocketmageSDSPI::writeMetadata(const String& path) {
   const char* metaPath = SYS_METADATA_FILE;
 
   // Read existing metadata
-  File metaFile = SD.open(metaPath, FILE_READ);
+  File metaFile = global_fs->open(metaPath, FILE_READ);
   String updatedMeta;
   bool replaced = false;
 
@@ -989,7 +1129,7 @@ void PocketmageSDSPI::writeMetadata(const String& path) {
   }
 
   // Write back metadata
-  metaFile = SD.open(metaPath, FILE_WRITE);
+  metaFile = global_fs->open(metaPath, FILE_WRITE);
   if (!metaFile) {
     ESP_LOGE(TAG, "Failed to open metadata file for writing: %s", metaPath);
     return;
@@ -1076,7 +1216,7 @@ void PocketmageSDSPI::deleteMetadata(String path) {
   const char* metaPath = SYS_METADATA_FILE;
 
   // Open metadata file for reading
-  File metaFile = SD.open(metaPath, FILE_READ);
+  File metaFile = global_fs->open(metaPath, FILE_READ);
   if (!metaFile) {
     ESP_LOGE(TAG, "Metadata file not found: %s", metaPath);
     return;
@@ -1093,10 +1233,10 @@ void PocketmageSDSPI::deleteMetadata(String path) {
   metaFile.close();
 
   // Delete original metadata file
-  SD.remove(metaPath);
+  global_fs->remove(metaPath);
 
   // Recreate file and write kept lines
-  File writeFile = SD.open(metaPath, FILE_WRITE);
+  File writeFile = global_fs->open(metaPath, FILE_WRITE);
   if (!writeFile) {
     ESP_LOGE(TAG, "Failed to recreate metadata file. %s", writeFile.path());
     return;
@@ -1126,7 +1266,7 @@ void PocketmageSDSPI::renFile(String oldFile, String newFile) {
     if (!newFile.startsWith("/"))
       newFile = "/" + newFile;
 
-    if (SD.rename(oldFile.c_str(), newFile.c_str())) {
+    if (global_fs->rename(oldFile.c_str(), newFile.c_str())) {
       OLED().oledWord(oldFile + " -> " + newFile);
       delay(1000);
 
@@ -1152,7 +1292,7 @@ void PocketmageSDSPI::renMetadata(String oldPath, String newPath) {
   const char* metaPath = SYS_METADATA_FILE;
 
   // Open metadata file for reading
-  File metaFile = SD.open(metaPath, FILE_READ);
+  File metaFile = global_fs->open(metaPath, FILE_READ);
   if (!metaFile) {
     ESP_LOGE(TAG, "Metadata file not found: %s", metaPath);
     return;
@@ -1179,10 +1319,10 @@ void PocketmageSDSPI::renMetadata(String oldPath, String newPath) {
   metaFile.close();
 
   // Delete old metadata file
-  SD.remove(metaPath);
+  global_fs->remove(metaPath);
 
   // Recreate file and write updated lines
-  File writeFile = SD.open(metaPath, FILE_WRITE);
+  File writeFile = global_fs->open(metaPath, FILE_WRITE);
   if (!writeFile) {
     ESP_LOGE(TAG, "Failed to recreate metadata file: %s", metaPath);
     return;
@@ -1217,7 +1357,7 @@ void PocketmageSDSPI::copyFile(String oldFile, String newFile) {
       newFile = "/" + newFile;
 
     // Read source file
-    File src = SD.open(oldFile.c_str(), FILE_READ);
+    File src = global_fs->open(oldFile.c_str(), FILE_READ);
     if (!src || src.isDirectory()) {
       ESP_LOGE(TAG, "Failed to open source file: %s", oldFile.c_str());
       OLED().oledWord("COPY FAILED");
@@ -1226,7 +1366,7 @@ void PocketmageSDSPI::copyFile(String oldFile, String newFile) {
     }
 
     // Write destination file
-    File dst = SD.open(newFile.c_str(), FILE_WRITE);
+    File dst = global_fs->open(newFile.c_str(), FILE_WRITE);
     if (!dst) {
       ESP_LOGE(TAG, "Failed to open destination file: %s", newFile.c_str());
       src.close();
@@ -1271,7 +1411,7 @@ void PocketmageSDSPI::appendToFile(String path, String inText) {
   if (!path.startsWith("/"))
     path = "/" + path;
 
-  File file = SD.open(path.c_str(), FILE_APPEND);
+  File file = global_fs->open(path.c_str(), FILE_APPEND);
   if (!file) {
     OLED().oledWord("APPEND FAILED");
     keypad.enableInterrupts();
@@ -1524,7 +1664,7 @@ bool PocketmageSDSPI::readBinaryFile(const char* path, uint8_t* buf, size_t len)
   setCpuFrequencyMhz(240);
   if (noTimeout) noTimeout = true;
 
-  File f = SD.open(path, FILE_READ);
+  File f = global_fs->open(path, FILE_READ);
   if (!f || f.isDirectory()) {
     noTimeout = false;
     ESP_LOGE(tag, "Failed to open file: %s", path);
@@ -1543,7 +1683,7 @@ size_t PocketmageSDSPI::getFileSize(const char* path) {
   if (noSD_)
     return 0;
 
-  File f = SD_MMC.open(path, "r");
+  File f = global_fs->open(path, "r");
   if (!f)
     return 0;
   size_t size = f.size();

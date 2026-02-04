@@ -1086,7 +1086,7 @@ void loadMarkdownFile(const String& path) {
   delay(50);
 
   docLines.clear();
-  File file = SD_MMC.open(path.c_str(), FILE_READ);
+  File file = global_fs->open(path.c_str(), FILE_READ);
   if (!file) {
     ESP_LOGE("SD", "File does not exist: %s", path.c_str());  // FIXME: - Come up with better error handling
                                                               //        - Should this be Error or Warning?
@@ -1194,7 +1194,7 @@ void saveMarkdownFile(const String& path) {
   if (!savePath.startsWith("/"))
     savePath = "/" + savePath;
 
-  File file = SD_MMC.open(savePath.c_str(), FILE_WRITE);
+  File file = global_fs->open(savePath.c_str(), FILE_WRITE);
   if (!file) {
     OLED().oledWord("SAVE FAILED - OPEN ERR");
     delay(2000);
@@ -1257,7 +1257,7 @@ void newMarkdownFile(const String& path) {
   if (!savePath.startsWith("/"))
     savePath = "/" + savePath;
 
-  File file = SD_MMC.open(savePath.c_str(), FILE_WRITE);
+  File file = global_fs->open(savePath.c_str(), FILE_WRITE);
   if (!file) {
     OLED().oledWord("SAVE FAILED - OPEN ERR");
     delay(2000);

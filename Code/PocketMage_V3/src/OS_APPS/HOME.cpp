@@ -35,7 +35,7 @@ void commandSelect(String command) {
     command = removeChar(command, ' ');
     command = removeChar(command, '-');
     keypad.disableInterrupts();
-    PM_SDAUTO().listDir(SD_MMC, "/");
+    PM_SDAUTO().listDir(*global_fs, "/");
     keypad.enableInterrupts();
 
     for (uint8_t i = 0; i < MAX_FILES; i++) {
@@ -54,7 +54,7 @@ void commandSelect(String command) {
     command = removeChar(command, ' ');
     command = removeChar(command, '/');
     keypad.disableInterrupts();
-    PM_SDAUTO().listDir(SD_MMC, "/");
+    PM_SDAUTO().listDir(*global_fs, "/");
     keypad.enableInterrupts();
 
     for (uint8_t i = 0; i < MAX_FILES; i++) {

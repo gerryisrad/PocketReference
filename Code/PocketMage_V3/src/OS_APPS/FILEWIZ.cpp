@@ -86,7 +86,7 @@ String renderWizMini(String folder, int8_t scrollDelta) {
     scrollDelta = 0;
     cachedFiles.clear();
 
-    File dir = SD_MMC.open(folder);
+    File dir = global_fs->open(folder);
     if (dir && dir.isDirectory()) {
       File entry;
       while ((entry = dir.openNextFile())) {
@@ -288,7 +288,7 @@ String fileWizardMini(bool allowRecentSelect, String rootDir) {
     // Select received
     else if (inchar == 20 || inchar == 29 || inchar == 7 || inchar == 13) {
       if (selectedPath != "") {
-        File entry = SD_MMC.open(selectedPath);
+        File entry = global_fs->open(selectedPath);
         // If selectedPath is a folder, open it and change the selectedDirectory
         if (entry && entry.isDirectory()) {
           selectedDirectory = selectedPath;
@@ -626,7 +626,7 @@ void einkHandler_FILEWIZ() {
         // DRAW FILE LIST
         // TODO: Replace this with displaying the 10 most recent files from SDMMC_META
         keypad.disableInterrupts();
-        PM_SDAUTO().listDir(SD_MMC, "/notes");
+        PM_SDAUTO().listDir(*global_fs, "/notes");
         keypad.enableInterrupts();
 
         for (int i = 0; i < MAX_FILES; i++) {

@@ -46,7 +46,7 @@ void updateEventArray() {
   pocketmage::setCpuSpeed(240);
   delay(50);
 
-  File file = SD_MMC.open("/sys/events.txt", "r"); // Open the text file in read mode
+  File file = global_fs->open("/sys/events.txt", "r"); // Open the text file in read mode
   if (!file) {
     ESP_LOGE(TAG, "Failed to open file for reading: %s", file.path());
     return;

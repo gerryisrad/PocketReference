@@ -94,7 +94,7 @@ namespace pocketmage {
             delay(50);
 
             // Check if there are custom screensavers
-            File dir = SD_MMC.open("/assets/backgrounds");
+            File dir = global_fs->open("/assets/backgrounds");
             std::vector<String> binFiles;
 
             if (dir) {
@@ -113,7 +113,7 @@ namespace pocketmage {
             if (!binFiles.empty()) {
                 int fileIndex = esp_random() % binFiles.size();
                 String path = "/assets/backgrounds/" + binFiles[fileIndex];
-                File f = SD_MMC.open(path);
+                File f = global_fs->open(path);
                 if (f) {
                     static uint8_t buf[320 * 240]; // Declare as static to avoid stack overflow :D
                     f.read(buf, sizeof(buf));
@@ -235,10 +235,11 @@ void PocketMage_INIT(){
   // Serial, I2C, SPI
   Serial.begin(115200);
   Wire.begin(I2C_SDA, I2C_SCL);
-  //screenSPI.begin(SPI_SCK, -1, SPI_MOSI, -1);
+
   vspi = new SPIClass(FSPI/*VSPI*/);
   vspi->begin(SPI_SCK, -1, SPI_MOSI, -1);
-  pinMode(vspi->pinSS(), OUTPUT);  //HSPI SS
+  pinMode(vspi->pinSS(), OUTPUT);
+
 
   // WAKE INTERRUPT SETUP
   pinMode(KB_IRQ, INPUT);
