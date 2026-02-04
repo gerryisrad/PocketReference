@@ -209,6 +209,7 @@ void setupSD() {
   // Load compatibility mode
   prefs.begin("PocketMage", true);
   SD_SPI_COMPATIBILITY = prefs.getBool("SD_SPI_CMPT", false);
+  ALLOW_NO_MICROSD = prefs.getBool("ALLOW_NO_SD", true);
   prefs.end();
   Serial.print("SD_SPI_CMPT" + String(SD_SPI_COMPATIBILITY));
   delay(100);
