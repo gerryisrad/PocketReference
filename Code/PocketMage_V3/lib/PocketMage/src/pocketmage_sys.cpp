@@ -227,12 +227,12 @@ void PocketMage_INIT(){
   bool seamlessReboot = false;
   prefs.begin("PocketMage", false);
   if (prefs.getBool("Seamless_Reboot", false) == true){
-          seamlessReboot = true;
-          prefs.putBool("Seamless_Reboot", false);
+    seamlessReboot = true;
+    prefs.putBool("Seamless_Reboot", false);
   }
   prefs.end();
 
-  // Serial, I2C, SPI
+  // Serial, I2C, SPIA
   Serial.begin(115200);
   Wire.begin(I2C_SDA, I2C_SCL);
 

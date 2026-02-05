@@ -158,15 +158,13 @@ void setup() {
 
 // Keyboard / OLED Loop
 void loop() {
-  static int i = 0;
+  // Run background tasks
   #if !OTA_APP // POCKETMAGE_OS
     if (!noTimeout)  checkTimeout();
     if (DEBUG_VERBOSE) printDebug();
-
-    if (DEBUG_VERBOSE) PowerSystem.printDiagnostics();
   #endif
-
   updateBattState();
+  
   processKB();
 
   // Yield to watchdog

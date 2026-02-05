@@ -373,6 +373,13 @@ String textPrompt(String promptText, String prefix) {
   long lastInput = millis();
 
   for (;;) {
+    // Run background tasks
+    #if !OTA_APP // POCKETMAGE_OS
+      if (!noTimeout)  checkTimeout();
+      if (DEBUG_VERBOSE) printDebug();
+    #endif
+    updateBattState();
+
     int currentMillis = millis();
     String left = "";
     String right = "";

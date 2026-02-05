@@ -113,7 +113,12 @@ String commandSelect(String command) {
   }
   /////////////////////////////
   else if (command == "home") {
-    returnText = "You're home, silly!";
+    if (CurrentAppState == HOME) {
+      returnText = "You're home, silly!";
+    }
+    else {
+      HOME_INIT();
+    }
   } 
   /////////////////////////////
   else if (command == "note" || command == "text" || command == "write" || command == "notebook" || command == "notepad" || command == "txt" || command == "1") {
