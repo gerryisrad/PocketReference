@@ -8,6 +8,7 @@
 
 #include <pocketmage.h>
 
+
 static constexpr const char* tag = "OLED";
 
 // Initialization of oled display class
