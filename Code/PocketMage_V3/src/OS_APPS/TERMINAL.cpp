@@ -1,12 +1,21 @@
 #include <globals.h>
 
-enum TERMINAL_functions { PROMPT, EXAMPLE };
+#include "wrench.h"
+
+// General
+enum TERMINAL_functions { PROMPT, POTION };
 TERMINAL_functions CurrentTERMfunc = PROMPT;
 
+// Terminal
 static std::vector<String> terminalOutputs;
-static String currentLine = "";
 static String currentDir = "/";
 
+// Potion
+String editFile = "example.c";
+static long currentPotionLine = 0;
+static std::vector<String> potionLines;
+
+// Functions
 #pragma region TERMINAL
 void funcSelect(String command) {
   String returnText = "";
@@ -481,11 +490,12 @@ void funcSelect(String command) {
 
       if (returnText == "") {
         // Compute full path
-        String filePath = arg.startsWith("/") ? arg : (currentDir + (currentDir.endsWith("/") ? "" : "/") + arg);
+        String filePath =
+            arg.startsWith("/") ? arg : (currentDir + (currentDir.endsWith("/") ? "" : "/") + arg);
 
         // Open in TXT
         PM_SDAUTO().setEditingFile(filePath);
-        OLED().oledWord("Opening: "+ PM_SDAUTO().getEditingFile());
+        OLED().oledWord("Opening: " + PM_SDAUTO().getEditingFile());
         pocketmage::setCpuSpeed(POWER_SAVE_FREQ);
         delay(1000);
         TXT_INIT(filePath);
@@ -514,17 +524,26 @@ void funcSelect(String command) {
   }
 }
 
+#pragma region POTION
+
+
 void TERMINAL_INIT() {
   CurrentAppState = TERMINAL;
-  CurrentTERMfunc = PROMPT;
+  //CurrentTERMfunc = PROMPT;
+  CurrentTERMfunc = POTION;
+  potionLines.push_back("");
   KB().setKeyboardState(NORMAL);
-  currentLine = "";
   newState = true;
 }
 
 void processKB_TERMINAL() {
+  // Prompt
   String outLine = "";
   String command = "";
+
+  // Potion
+  static int cursor_pos = 0;
+  static long lastInput = millis();
 
   switch (CurrentTERMfunc) {
     case PROMPT:
@@ -534,37 +553,256 @@ void processKB_TERMINAL() {
       } else
         HOME_INIT();
       break;
+    case POTION:
+      int currentMillis = millis();
+      String left = "";
+      String right = "";
+
+      if (currentMillis - KBBounceMillis >= KB_COOLDOWN) {
+        char inchar = KB().updateKeypress();
+
+        if (inchar != 0) lastInput = millis();
+
+        // HANDLE INPUTS
+        // No char recieved
+        if (inchar == 0) ;
+        // CR Recieved
+        else if (inchar == 13) {
+          // Add a line and go to it
+          potionLines.push_back("");
+          currentPotionLine++;
+          cursor_pos = 0;
+          newState = true;
+          break;
+        }
+        // SHIFT Recieved
+        else if (inchar == 17) {
+          if (KB().getKeyboardState() == SHIFT || KB().getKeyboardState() == FN_SHIFT) {
+            KB().setKeyboardState(NORMAL);
+          } else if (KB().getKeyboardState() == FUNC) {
+            KB().setKeyboardState(FN_SHIFT);
+          } else {
+            KB().setKeyboardState(SHIFT);
+          }
+        }
+        // FN Recieved
+        else if (inchar == 18) {
+          if (KB().getKeyboardState() == FUNC || KB().getKeyboardState() == FN_SHIFT) {
+            KB().setKeyboardState(NORMAL);
+          } else if (KB().getKeyboardState() == SHIFT) {
+            KB().setKeyboardState(FN_SHIFT);
+          } else {
+            KB().setKeyboardState(FUNC);
+          }
+        }
+        // BKSP Recieved
+        else if (inchar == 8) {
+          if (potionLines[currentPotionLine].length() > 0 && cursor_pos != 0) {
+            if (cursor_pos == potionLines[currentPotionLine].length()) {
+              potionLines[currentPotionLine].remove(potionLines[currentPotionLine].length() - 1, 1);
+            } else {
+              potionLines[currentPotionLine].remove(cursor_pos - 1, 1);
+            }
+            cursor_pos--;
+          }
+        }
+        // LEFT
+        else if (inchar == 19) {
+          if (cursor_pos > 0) {
+            cursor_pos--;
+          }
+        }
+        // RIGHT
+        else if (inchar == 21) {
+          if (cursor_pos < potionLines[currentPotionLine].length()) {
+            cursor_pos++;
+          }
+        }
+        // CENTER
+        else if (inchar == 20) {
+        }
+        // SHIFT+LEFT
+        else if (inchar == 28) {
+          cursor_pos = 0;
+          KB().setKeyboardState(NORMAL);
+        }
+        // SHIFT+RIGHT
+        else if (inchar == 30) {
+          cursor_pos = potionLines[currentPotionLine].length();
+          KB().setKeyboardState(NORMAL);
+        }
+        // SHIFT+CENTER
+        else if (inchar == 29) {
+          KB().setKeyboardState(NORMAL);
+        }
+        // FN+LEFT
+        else if (inchar == 12) {
+          TERMINAL_INIT();
+          break;
+        }
+        // FN+RIGHT
+        else if (inchar == 6) {
+          KB().setKeyboardState(NORMAL);
+        }
+        // FN+CENTER
+        else if (inchar == 7) {
+          potionLines[currentPotionLine] = "";
+          cursor_pos = 0;
+          KB().setKeyboardState(NORMAL);
+        }
+        // FN+SHIFT+LEFT
+        else if (inchar == 24) {
+          KB().setKeyboardState(NORMAL);
+        }
+        // FN+SHIFT+RIGHT
+        else if (inchar == 26) {
+          KB().setKeyboardState(NORMAL);
+        }
+        // FN+SHIFT+CENTER
+        else if (inchar == 25) {
+          KB().setKeyboardState(NORMAL);
+        }
+        // TAB, SHIFT+TAB / FN+TAB, FN+SHIFT+TAB
+        else if (inchar == 9 || inchar == 14) {
+          KB().setKeyboardState(NORMAL);
+        } else {
+          // split line at cursor_pos
+          if (cursor_pos == 0) {
+            potionLines[currentPotionLine] = inchar + potionLines[currentPotionLine];
+          } else if (cursor_pos == potionLines[currentPotionLine].length()) {
+            potionLines[currentPotionLine] += inchar;
+          } else {
+            left = potionLines[currentPotionLine].substring(0, cursor_pos);
+            right = potionLines[currentPotionLine].substring(cursor_pos);
+            potionLines[currentPotionLine] = left + inchar + right;
+          }
+          cursor_pos++;
+          if (inchar >= 48 && inchar <= 57) {
+          }  // Only leave FN on if typing numbers
+          else if (KB().getKeyboardState() != NORMAL) {
+            KB().setKeyboardState(NORMAL);
+          }
+        }
+
+        currentMillis = millis();
+        // Make sure oled only updates at OLED_MAX_FPS
+        if (currentMillis - OLEDFPSMillis >= (1000 / OLED_MAX_FPS)) {
+          OLEDFPSMillis = currentMillis;
+
+          if (millis() - lastInput > IDLE_TIME) {
+            mageIdle(true);
+          } else {
+            resetIdle();
+
+            String lineNum = String(currentPotionLine);
+            while (lineNum.length() < 3) {
+              lineNum = "0" + lineNum;
+            }
+            String cursor = String(cursor_pos);
+            while (cursor.length() < 2) {
+              cursor = "0" + cursor;
+            }
+
+            String promptText = "[" + lineNum + "][" + cursor + "] - " + editFile;
+            OLED().oledLine(potionLines[currentPotionLine], cursor_pos, false, promptText);
+          }
+        }
+      }
+
+
+      break;
   }
 }
 
 void einkHandler_TERMINAL() {
-  if (newState) {
-    newState = false;
-    display.fillRect(0, 0, display.width(), display.height(), GxEPD_BLACK);
+  switch (CurrentTERMfunc) {
+    case PROMPT:
+      if (newState) {
+        newState = false;
+        display.fillRect(0, 0, display.width(), display.height(), GxEPD_BLACK);
 
-    if (terminalOutputs.size() < 14) {
-      int y = 14;
-      for (const String& s : terminalOutputs) {
-        display.setTextColor(GxEPD_WHITE);
-        display.setFont(&FreeMonoBold9pt7b);
-        display.setCursor(5, y);
-        display.print(s);
-        y += 16;
-      }
-    } else {
-      int y = display.height() - 5;
-      for (int i = terminalOutputs.size() - 1; i >= 0; i--) {
-        if (y < 0)
-          break;
-        const String& s = terminalOutputs[i];
-        display.setTextColor(GxEPD_WHITE);
-        display.setFont(&FreeMonoBold9pt7b);
-        display.setCursor(5, y);
-        display.print(s);
-        y -= 16;
-      }
-    }
+        if (terminalOutputs.size() < 14) {
+          int y = 14;
+          for (const String& s : terminalOutputs) {
+            display.setTextColor(GxEPD_WHITE);
+            display.setFont(&FreeMonoBold9pt7b);
+            display.setCursor(5, y);
+            display.print(s);
+            y += 16;
+          }
+        } else {
+          int y = display.height() - 5;
+          for (int i = terminalOutputs.size() - 1; i >= 0; i--) {
+            if (y < 0)
+              break;
+            const String& s = terminalOutputs[i];
+            display.setTextColor(GxEPD_WHITE);
+            display.setFont(&FreeMonoBold9pt7b);
+            display.setCursor(5, y);
+            display.print(s);
+            y -= 16;
+          }
+        }
 
-    EINK().refresh();
+        EINK().refresh();
+      }
+      break;
+    case POTION:
+      if (newState) {
+        newState = false;
+        display.fillRect(0, 0, display.width(), display.height(), GxEPD_BLACK);
+
+        if (potionLines.size() < 24) {
+          int y = 10;
+          for (size_t i = 0; i < potionLines.size(); i++) {
+            const String& s = potionLines[i];
+            
+            String lineNum = String(i);
+            while (lineNum.length() < 3) {
+              lineNum = "0" + lineNum;
+            }
+
+            if (i == currentPotionLine) {
+              display.fillRect(0, y-9, display.width(), 11, GxEPD_WHITE);
+              display.setTextColor(GxEPD_BLACK);
+            }
+            else display.setTextColor(GxEPD_WHITE);
+            display.setFont(&Font5x7Fixed);
+            display.setCursor(5, y);
+            display.print("["+lineNum+"]");
+            display.setCursor(35, y);
+            display.print(s);
+            y += 10;
+          }
+        } 
+        else {
+          int y = display.height() - 2;
+          for (int i = potionLines.size() - 1; i >= 0; i--) {
+            if (y < 0) break;
+            const String& s = potionLines[i];
+            
+            String lineNum = String(i);
+            while (lineNum.length() < 3) {
+              lineNum = "0" + lineNum;
+            }
+
+            if (i == currentPotionLine) {
+              display.fillRect(0, y-9, display.width(), 11, GxEPD_WHITE);
+              display.setTextColor(GxEPD_BLACK);
+            }
+            else display.setTextColor(GxEPD_WHITE);
+            display.setFont(&Font5x7Fixed);
+            display.setCursor(5, y);
+            display.print("["+lineNum+"]");
+            display.setCursor(35, y);
+            display.print(s);
+            y += 10;
+          }
+        }
+        
+        EINK().refresh();
+      }
+
+      break;
   }
 }
