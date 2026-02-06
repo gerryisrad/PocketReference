@@ -139,3 +139,6 @@ void loadAndDrawAppIcon(int x, int y, int otaIndex, bool showName = true, int ma
 void TERMINAL_INIT();
 void processKB_TERMINAL();
 void einkHandler_TERMINAL();
+// Wrench
+const char* readCFile(const String& path);
+void compileWrench(const char* wrenchCode);

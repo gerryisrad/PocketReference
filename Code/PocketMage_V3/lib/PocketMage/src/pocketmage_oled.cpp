@@ -85,6 +85,7 @@ void PocketmageOled::oledWord(String word, bool allowLarge, bool showInfo) {
 }
 
 void PocketmageOled::oledLine(String line, int input_pos, bool doProgressBar, String bottomMsg) {
+    u8g2.setDrawColor(1);
     uint8_t mcl = EINK().maxCharsPerLine();
     uint8_t maxLength = mcl;
     String left = "";
