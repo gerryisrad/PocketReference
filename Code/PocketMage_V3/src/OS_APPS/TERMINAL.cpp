@@ -812,7 +812,7 @@ void funcSelect(String command) {
 #pragma region BREW
 // Wrench functions
 // OLED line
-void wr_oledLine(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+void wr_oledWord(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   char buf[1024];
 
   const char* s = argv[0].asString(buf, 1024);
@@ -826,6 +826,10 @@ void wr_print(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* u
   const char* s = argv[0].asString(buf, 1024);
 
   terminalOutputs.push_back(s);
+}
+
+// updateTerm
+void wr_updateTerm(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   updateTerminalDisp();
 }
 
@@ -869,8 +873,9 @@ void compileWrench(const char* wrenchCode) {
   WRState* w = wr_newState();
 
   // Register functions
-  wr_registerFunction(w, "oledLine", wr_oledLine);
+  wr_registerFunction(w, "oledWord", wr_oledWord);
   wr_registerFunction(w, "print", wr_print);
+  wr_registerFunction(w, "updateTerm", wr_updateTerm);
   wr_registerFunction(w, "delay", wr_delay);
 
   // Allocate compiled code
@@ -893,6 +898,8 @@ void compileWrench(const char* wrenchCode) {
 
   // Close code
   wr_destroyState(w);
+
+  newState = true;
 }
 
 #pragma region MAIN
