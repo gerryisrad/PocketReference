@@ -36,7 +36,7 @@ extern String OTA4_APP;
 enum KBState { NORMAL, SHIFT, FUNC, FN_SHIFT };    // Keyboard state
 
 // ===================== APP STATES =====================
-enum AppState { HOME, TXT, FILEWIZ, USB_APP, BT, SETTINGS, TASKS, CALENDAR, JOURNAL, LEXICON, APPLOADER };
+enum AppState { HOME, TXT, FILEWIZ, USB_APP, BT, SETTINGS, TASKS, CALENDAR, JOURNAL, LEXICON, APPLOADER, TERMINAL };
 extern const String appStateNames[];            // App state names
 extern const unsigned char *appIcons[11];       // App icons
 extern AppState CurrentAppState;                // Current app state
@@ -59,6 +59,7 @@ void printDebug();
 void checkTimeout();
 void loadState(bool changeState = true);
 void updateBattState();
+String textPrompt(String promptText = "", String prefix = "");
 #if !OTA_APP
 void saveEditingFile(); // OTA_APP: Remove saveEditingFile
 #endif
@@ -87,6 +88,7 @@ void saveMarkdownFile(const String& path);
 void HOME_INIT();
 void einkHandler_HOME();
 void processKB_HOME();
+String commandSelect(String command);
 void mageIdle(bool internalRefresh = true);
 void resetIdle();
 
@@ -101,7 +103,7 @@ void processKB_TASKS();
 void SETTINGS_INIT();
 void processKB_settings();
 void einkHandler_settings();
-void settingCommandSelect(String command);
+String settingCommandSelect(String command);
 
 // <USB.cpp>
 void USB_INIT();
@@ -132,3 +134,8 @@ void rebootToAppSlot(int otaIndex);
 void loadAndDrawAppIcon(int x, int y, int otaIndex, bool showName = true, int maxNameChars = 10);
 #endif // POCKETMAGE_OS
 #endif // GLOBALS_H
+
+// <TERMINAL.cpp>
+void TERMINAL_INIT();
+void processKB_TERMINAL();
+void einkHandler_TERMINAL();

@@ -21,6 +21,7 @@
 #define TOUCH_TIMEOUT_MS 1200                   // Delay after scrolling to return to typing mode (ms)
 #define SYS_METADATA_FILE "/sys/SDMMC_META.txt" // File path to the file system metadata file
 #define POWER_SAVE_FREQ 40                      // CPU freq for power save mode
+#define IDLE_TIME 20000                         // time to wait for mage idle (ms)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////|
 
 // PIN DEFINITION
