@@ -200,7 +200,6 @@ void funcSelect(String command) {
 
   command.toLowerCase();
 
-#pragma region Basic Commands
 
   // Clear command window
   if (command == "clear") {
@@ -227,7 +226,7 @@ void funcSelect(String command) {
     newState = true;
     return;
   }
-#pragma region File Operations
+
   // Enter directory
   else if (command.startsWith("cd")) {
     pocketmage::setCpuSpeed(240);
@@ -810,7 +809,8 @@ void funcSelect(String command) {
 }
 
 #pragma region BREW
-// Wrench functions
+// ---------- Wrench functions ---------- //
+// ----- In/Out ----- //
 // OLED line
 void wr_oledWord(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   char buf[1024];
@@ -828,16 +828,40 @@ void wr_print(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* u
   terminalOutputs.push_back(s);
 }
 
+// Prompt
+void wr_prompt(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  char inbuf[1024];
+  char retbuf[1024];
+
+  const char* promptText = argv[0].asString(inbuf, 1024);
+
+  String entered = textPrompt(promptText);
+  if (entered == "_EXIT_") entered = "";
+  entered.toCharArray(retbuf, sizeof(retbuf));
+
+  wr_makeString(c, &ret, retbuf);
+}
+
 // updateTerm
 void wr_updateTerm(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   updateTerminalDisp();
 }
 
+// ----- Helpers ----- //
 // Delay
 void wr_delay(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   if (argv[0].asInt() > 0) {
     delay(argv[0].asInt());
   }
+}
+
+// String to int
+void wr_toInt(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  char inbuf[1024];
+
+  const char* inString = argv[0].asString(inbuf, 1024);
+  
+  wr_makeInt(&ret, atoi(inString));
 }
 
 // Compile and run wrench program
@@ -875,25 +899,51 @@ void compileWrench(const char* wrenchCode) {
   // Register functions
   wr_registerFunction(w, "oledWord", wr_oledWord);
   wr_registerFunction(w, "print", wr_print);
+  wr_registerFunction(w, "prompt", wr_prompt);
   wr_registerFunction(w, "updateTerm", wr_updateTerm);
   wr_registerFunction(w, "delay", wr_delay);
+  wr_registerFunction(w, "toInt", wr_toInt);
 
   // Allocate compiled code
   unsigned char* outBytes;
   int outLen;
 
   // Compile code
-  int err = wr_compile(wrenchCode, strlen(wrenchCode), &outBytes, &outLen);
+  char errMsg[256] = {0};
+  int err = wr_compile(wrenchCode, strlen(wrenchCode), &outBytes, &outLen, errMsg);
 
   // Run the code
   if (err == 0) {
     wr_run(w, outBytes, outLen, true);  // load and run the code!
   }
 
-  // Error state
-  else {
-    terminalOutputs.push_back("Compile Fail! ERR:" + String(err) );
-    newState = true;
+  // Output error message
+  if (errMsg && errMsg[0] != '\0') {
+    const char* p = errMsg;
+    const char* lineStart = p;
+
+    while (*p) {
+      if (*p == '\n') {
+        int len = p - lineStart;
+        if (len > 0 && lineStart[len - 1] == '\r') {
+          len--; // handle CRLF
+        }
+
+        // limit to 29 chars
+        int outLen = (len > 29) ? 29 : len;
+        terminalOutputs.push_back(String(lineStart).substring(0, outLen));
+
+        lineStart = p + 1;
+      }
+      p++;
+    }
+
+    // last line (if no trailing newline)
+    if (lineStart != p) {
+      int len = p - lineStart;
+      int outLen = (len > 29) ? 29 : len;
+      terminalOutputs.push_back(String(lineStart).substring(0, outLen));
+    }
   }
 
   // Close code
@@ -952,7 +1002,7 @@ void processKB_TERMINAL() {
         // CR Recieved
         else if (inchar == 13) {
           // Add a line and go to it
-          potionLines.push_back("");
+          potionLines.insert(potionLines.begin() + currentPotionLine + 1, "");
           currentPotionLine++;
           cursor_pos = 0;
           newState = true;
@@ -987,6 +1037,10 @@ void processKB_TERMINAL() {
               potionLines[currentPotionLine].remove(cursor_pos - 1, 1);
             }
             cursor_pos--;
+          }
+          else if (potionLines[currentPotionLine].length() == 0) {
+            potionLines.erase(potionLines.begin() + currentPotionLine);
+            newState = true;
           }
         }
         // LEFT
@@ -1027,6 +1081,7 @@ void processKB_TERMINAL() {
         else if (inchar == 6) {
           if (editFile != "")
             savePotionFile(editFile);
+            newState = true;
           break;
         }
         // FN+CENTER
@@ -1049,8 +1104,9 @@ void processKB_TERMINAL() {
         }
         // TAB, SHIFT+TAB / FN+TAB, FN+SHIFT+TAB
         else if (inchar == 9 || inchar == 14) {
-          KB().setKeyboardState(NORMAL);
-        } else {
+          potionLines[currentPotionLine] = "  " + potionLines[currentPotionLine];
+        } 
+        else {
           // split line at cursor_pos
           if (cursor_pos == 0) {
             potionLines[currentPotionLine] = inchar + potionLines[currentPotionLine];
