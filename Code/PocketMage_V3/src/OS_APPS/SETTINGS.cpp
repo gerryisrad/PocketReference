@@ -188,7 +188,7 @@ String settingCommandSelect(String command) {
 
     ALLOW_NO_MICROSD = (noSDPart == "t");
     prefs.begin("PocketMage", false);
-    prefs.putBool("ALLOW_NO_MICROSD", ALLOW_NO_MICROSD);
+    prefs.putBool("ALLOW_NO_SD", ALLOW_NO_MICROSD);
     prefs.end();
     newState = true;
     returnText = "Settings Updated";
