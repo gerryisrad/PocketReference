@@ -847,6 +847,95 @@ void wr_updateTerm(WRContext* c, const WRValue* argv, int argn, WRValue& ret, vo
   updateTerminalDisp();
 }
 
+// ----- E-Ink Display ----- //
+void wr_updateInk(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  EINK().refresh();
+}
+
+void wr_inkBackground(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  bool bgColor = (argv[0].asInt() == 0);
+
+  display.fillScreen(bgColor);
+}
+
+void wr_inkRect(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  int x_origin      = argv[0].asInt();
+  int y_origin      = argv[1].asInt();
+  int width         = argv[2].asInt();
+  int height        = argv[3].asInt();
+  bool borderColor  = (argv[4].asInt() == 0);
+  bool fillColor    = (argv[5].asInt() == 0);
+  
+  // Black on black or white on white
+  if ((fillColor && borderColor) || (!fillColor && !borderColor)) {
+    display.fillRect(x_origin, y_origin, width, height, !fillColor);
+  }
+  // Black border white fill
+  else if (borderColor && !fillColor) {
+    display.drawRect(x_origin, y_origin, width, height, 1);
+  }
+  //White border, black fill
+  else if (!borderColor && fillColor) {
+    display.drawRect(x_origin, y_origin, width, height, 0);
+    display.fillRect(x_origin+1, y_origin+1, width-2, height-2, 1);
+  }
+}
+
+void wr_inkCircle(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  int x_origin      = argv[0].asInt();
+  int y_origin      = argv[1].asInt();
+  int radius        = argv[2].asInt();
+  bool borderColor  = (argv[3].asInt() == 0);
+  bool fillColor    = (argv[4].asInt() == 0);
+  
+  // Black on black or white on white
+  if ((fillColor && borderColor) || (!fillColor && !borderColor)) {
+    display.fillCircle(x_origin, y_origin, radius, fillColor);
+  }
+  // Black border white fill
+  else if (borderColor && !fillColor) {
+    display.drawCircle(x_origin, y_origin, radius, 1);
+  }
+  //White border, black fill
+  else if (!borderColor && fillColor) {
+    display.drawCircle(x_origin, y_origin, radius, 0);
+    display.fillCircle(x_origin, y_origin, radius-2, 1);
+  }
+}
+
+void wr_inkText(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  char buf[1024];
+
+  int x_origin      = argv[0].asInt();
+  int y_origin      = argv[1].asInt();
+  int size          = argv[2].asInt();
+  bool color        = (argv[3].asInt() != 0);
+  const char* text  = argv[4].asString(buf, 1024);
+  
+  // Set color
+  if (color) display.setTextColor(GxEPD_BLACK);
+  else display.setTextColor(GxEPD_WHITE);
+
+  // Set font
+  switch (size) {
+    case 1:
+      display.setFont(&Font5x7Fixed);
+      break;
+    case 2:
+      display.setFont(&FreeMonoBold9pt7b);
+      break;
+    case 3:
+      display.setFont(&FreeMonoBold12pt7b);
+      break;
+    default:
+      display.setFont(&FreeMonoBold9pt7b);
+      break;
+  }
+  
+  display.setCursor(x_origin, y_origin);
+  display.print(text);
+}
+
 // ----- Helpers ----- //
 // Delay
 void wr_delay(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
@@ -903,6 +992,11 @@ void compileWrench(const char* wrenchCode) {
   wr_registerFunction(w, "updateTerm", wr_updateTerm);
   wr_registerFunction(w, "delay", wr_delay);
   wr_registerFunction(w, "toInt", wr_toInt);
+  wr_registerFunction(w, "inkCircle", wr_inkCircle);
+  wr_registerFunction(w, "inkRect", wr_inkRect);
+  wr_registerFunction(w, "updateInk", wr_updateInk);
+  wr_registerFunction(w, "inkBackground", wr_inkBackground);
+  wr_registerFunction(w, "inkText", wr_inkText);
 
   // Allocate compiled code
   unsigned char* outBytes;
@@ -1002,8 +1096,14 @@ void processKB_TERMINAL() {
         // CR Recieved
         else if (inchar == 13) {
           // Add a line and go to it
-          potionLines.insert(potionLines.begin() + currentPotionLine + 1, "");
-          currentPotionLine++;
+          if (cursor_pos == 0 && potionLines[currentPotionLine].length() > 0) {
+            potionLines.insert(potionLines.begin() + currentPotionLine, "");
+          }
+          else {
+            potionLines.insert(potionLines.begin() + currentPotionLine + 1, "");
+            currentPotionLine++;
+          }
+          KB().setKeyboardState(NORMAL);
           cursor_pos = 0;
           newState = true;
           break;
