@@ -1,5 +1,5 @@
 # PocketMage PDA
-[Please note that this project is a work in progress and incomplete]
+[Please note that this project is in Beta]
 
 @Ashtf 2025
 
