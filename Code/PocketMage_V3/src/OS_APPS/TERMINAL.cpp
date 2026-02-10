@@ -811,7 +811,6 @@ void funcSelect(String command) {
 #pragma region BREW
 // ---------- Wrench functions ---------- //
 // ----- In/Out ----- //
-// OLED line
 void wr_oledWord(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   char buf[1024];
 
@@ -819,7 +818,6 @@ void wr_oledWord(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void
   OLED().oledWord(s);
 }
 
-// Print
 void wr_print(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   char buf[1024];
 
@@ -828,7 +826,6 @@ void wr_print(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* u
   terminalOutputs.push_back(s);
 }
 
-// Prompt
 void wr_prompt(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   char inbuf[1024];
   char retbuf[1024];
@@ -842,7 +839,6 @@ void wr_prompt(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* 
   wr_makeString(c, &ret, retbuf);
 }
 
-// updateTerm
 void wr_updateTerm(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   updateTerminalDisp();
 }
@@ -936,15 +932,101 @@ void wr_inkText(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void*
   display.print(text);
 }
 
+// ----- OLED Display ----- //
+void wr_updateOled(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  u8g2.sendBuffer();
+  u8g2.clearBuffer();
+}
+
+void wr_oledBackground(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  bool bgColor = (argv[0].asInt() == 0);
+
+  u8g2.setDrawColor(bgColor);
+  u8g2.drawBox(0,0,u8g2.getDisplayWidth(), u8g2.getDisplayHeight());
+  u8g2.setDrawColor(1);
+}
+
+void wr_oledRect(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  int x_origin      = argv[0].asInt();
+  int y_origin      = argv[1].asInt();
+  int width         = argv[2].asInt();
+  int height        = argv[3].asInt();
+  bool borderColor  = (argv[4].asInt() == 0);
+  bool fillColor    = (argv[5].asInt() == 0);
+  
+  // Black on black or white on white
+  if ((fillColor && borderColor) || (!fillColor && !borderColor)) {
+    u8g2.setDrawColor(!fillColor);
+    u8g2.drawBox(x_origin, y_origin, width, height);
+  }
+  // Black border white fill
+  else if (borderColor && !fillColor) {
+    u8g2.setDrawColor(1);
+    u8g2.drawFrame(x_origin, y_origin, width, height);
+  }
+  //White border, black fill
+  else if (!borderColor && fillColor) {
+    u8g2.setDrawColor(0);
+    u8g2.drawFrame(x_origin, y_origin, width, height);
+    u8g2.setDrawColor(1);
+    u8g2.drawBox(x_origin+1, y_origin+1, width-2, height-2);
+  }
+
+  u8g2.setDrawColor(1);
+}
+
+void wr_oledCircle(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  int x_origin      = argv[0].asInt();
+  int y_origin      = argv[1].asInt();
+  int radius        = argv[2].asInt();
+  bool borderColor  = (argv[3].asInt() == 0);
+  
+  u8g2.setDrawColor(borderColor);
+  u8g2.drawCircle(x_origin, y_origin, radius);
+
+  u8g2.setDrawColor(1);
+}
+
+void wr_oledText(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  char buf[1024];
+
+  int x_origin      = argv[0].asInt();
+  int y_origin      = argv[1].asInt();
+  int size          = argv[2].asInt();
+  bool color        = (argv[3].asInt() == 0);
+  const char* text  = argv[4].asString(buf, 1024);
+  
+  // Set color
+  u8g2.setDrawColor(color);
+
+  // Set font
+  switch (size) {
+    case 1:
+      u8g2.setFont(u8g2_font_5x7_tf);
+      break;
+    case 2:
+      u8g2.setFont(u8g2_font_7x13B_tf);
+      break;
+    case 3:
+      u8g2.setFont(u8g2_font_helvB14_tf);
+      break;
+    default:
+      u8g2.setFont(u8g2_font_lubR18_tf);  // regular
+      break;
+  }
+  
+  u8g2.drawStr(x_origin, y_origin, text);
+
+  u8g2.setDrawColor(1);
+}
+
 // ----- Helpers ----- //
-// Delay
 void wr_delay(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   if (argv[0].asInt() > 0) {
     delay(argv[0].asInt());
   }
 }
 
-// String to int
 void wr_toInt(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
   char inbuf[1024];
 
@@ -953,7 +1035,6 @@ void wr_toInt(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* u
   wr_makeInt(&ret, atoi(inString));
 }
 
-// Compile and run wrench program
 const char* readCFile(const String& path) {
   File f = global_fs->open(path);
   if (!f || f.isDirectory()) {
@@ -966,14 +1047,12 @@ const char* readCFile(const String& path) {
     return nullptr;  // empty file
   }
 
-  // Allocate a buffer to hold file contents + null terminator
   char* buf = (char*)malloc(len + 1);
   if (!buf) {
     f.close();
     return nullptr;  // allocation failed
   }
 
-  // Read file into buffer
   size_t readBytes = f.readBytes(buf, len);
   buf[readBytes] = '\0';  // null-terminate
   f.close();
@@ -997,6 +1076,11 @@ void compileWrench(const char* wrenchCode) {
   wr_registerFunction(w, "updateInk", wr_updateInk);
   wr_registerFunction(w, "inkBackground", wr_inkBackground);
   wr_registerFunction(w, "inkText", wr_inkText);
+  wr_registerFunction(w, "oledCircle", wr_oledCircle);
+  wr_registerFunction(w, "oledRect", wr_oledRect);
+  wr_registerFunction(w, "updateOled", wr_updateOled);
+  wr_registerFunction(w, "oledBackground", wr_oledBackground);
+  wr_registerFunction(w, "oledText", wr_oledText);
 
   // Allocate compiled code
   unsigned char* outBytes;
