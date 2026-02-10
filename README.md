@@ -16,9 +16,13 @@
 
 # [Getting Started]
 **Helpful Resources:**
+
 [FAQ](https://github.com/ashtf8/PocketMage_PDA/tree/main/Docs/FAQ)
+
 [Tutorials](https://github.com/ashtf8/PocketMage_PDA/tree/main/Docs/Tutorials)
+
 [PocketMage Command & Keystroke Manual](https://github.com/ashtf8/PocketMage_PDA/tree/main/Docs/Command%20Manual)
+
 [3rd Party App Template](https://github.com/ashtf8/PocketMage_PDA/blob/main/Code/PocketMage_V3/src/APP_TEMPLATE.cpp)
 
   Check the [APP_TEMPLATE.cpp](./Code/PocketMage_V3/src/APP_TEMPLATE.cpp) and [/Code/PocketMage_V3/src/readme.md](./Code/PocketMage_V3/src/readme.md) file for more information. Check out the following video as a tutorial on how to create and format your app:
