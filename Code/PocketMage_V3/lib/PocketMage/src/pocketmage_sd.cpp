@@ -327,7 +327,10 @@ void setupSD() {
               PM_SDSPI().setNoSD(true);
               return;
           } else {
-              OLED().oledWord("Insert SD Card and Reboot!", false, false);
+              OLED().oledWord("Compatibility Mode Failed. Retrying...", false, false);
+              prefs.begin("PocketMage", false);
+              prefs.putBool("SD_SPI_CMPT", false);
+              prefs.end();
               delay(5000);
               OLED().setPowerSave(1);
               BZ().playJingle(Jingles::Shutdown);
