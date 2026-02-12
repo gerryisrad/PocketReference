@@ -319,7 +319,7 @@ void setupSD() {
       if (!SD.begin(SD_CS, *hspi, 40000000)) { // adjust SPI frequency as needed
           ESP_LOGE(TAG, "SPI SD Mount Failed");
           OLED().oledWord("SPI SD Not Detected!", false, false);
-          delay(5000);
+          delay(2000);
 
           if (ALLOW_NO_MICROSD) {
               OLED().oledWord("All Work Will Be Lost!", false, false);
@@ -331,7 +331,7 @@ void setupSD() {
               prefs.begin("PocketMage", false);
               prefs.putBool("SD_SPI_CMPT", false);
               prefs.end();
-              delay(5000);
+              delay(2000);
               OLED().setPowerSave(1);
               BZ().playJingle(Jingles::Shutdown);
               esp_deep_sleep_start();
