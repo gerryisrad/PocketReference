@@ -1263,6 +1263,7 @@ void processKB_TERMINAL() {
             else if (line >= potionLines.size()) currentPotionLine = potionLines.size() - 1;
             newState = true;
           }
+          KB().setKeyboardState(NORMAL);
         }
         // SHIFT+LEFT
         else if (inchar == 28) {
