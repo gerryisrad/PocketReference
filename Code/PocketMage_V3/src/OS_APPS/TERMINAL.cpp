@@ -1035,6 +1035,14 @@ void wr_toInt(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* u
   wr_makeInt(&ret, atoi(inString));
 }
 
+void wr_random(WRContext* c, const WRValue* argv, int argn, WRValue& ret, void* usr) {
+  int min = argv[0].asInt();
+  int max = argv[1].asInt();
+
+  wr_makeInt(&ret, ((esp_random() % ((max-min)+1)) + min));
+}
+
+// ----- Wrench Functions ----- //
 const char* readCFile(const String& path) {
   File f = global_fs->open(path);
   if (!f || f.isDirectory()) {
@@ -1081,6 +1089,7 @@ void compileWrench(const char* wrenchCode) {
   wr_registerFunction(w, "updateOled", wr_updateOled);
   wr_registerFunction(w, "oledBackground", wr_oledBackground);
   wr_registerFunction(w, "oledText", wr_oledText);
+  wr_registerFunction(w, "random", wr_random);
 
   // Allocate compiled code
   unsigned char* outBytes;
