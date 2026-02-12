@@ -39,6 +39,10 @@ while (i < toInt(x)) {
 // Print the final i to the term
 print(i);
 
+// Generate a random number
+var randomInt = random(0, 100);
+print("Random Number: " + randomInt);
+
 // Update the terminal
 // (refresh the OLED)
 updateTerm();
