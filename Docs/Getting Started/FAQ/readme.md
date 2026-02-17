@@ -78,7 +78,21 @@ Yes! That guide can be found [here.](https://github.com/ashtf8/PocketMage_PDA/tr
 
 ###### **How do I flash the firmware?**
 
-First, carefully **remove the battery** out of your PocketMage (pull carefully on the plastic connector). Then, ensure the DIP switch for programming mode is switched to the ON position. Next, hold the power button while plugging your PocketMage into your computer, **nothing should happen**. Next, navigate to [The Web Flasher](https://ashtf8.github.io/PocketMage_PDA/) in a **chrome-based browser** and select your firmware version. The **most recent stable build** (highest number) is recommended. If you would like to keep your saved settings, ensure that the "Preserve user data during installation" check box is **checked**. Next, hit the flash button and select the PocketMage from the list of USB devices. Once the flashing is done, unplug your PocketMage and re-insert the battery. PocketMage should boot up automatically!
+First, carefully **remove the battery** out of your PocketMage (pull carefully on the plastic connector). 
+
+Then, ensure the DIP switch for programming mode is switched to the ON position. 
+
+Next, hold the power button while plugging your PocketMage into your computer, **nothing should happen**. 
+
+Next, navigate to [The Web Flasher](https://ashtf8.github.io/PocketMage_PDA/) in a **chrome-based browser** and select your firmware version. The **most recent stable build** (highest number) is recommended. 
+
+If you would like to keep your saved settings, ensure that the "Preserve user data during installation" check box is **checked**. 
+
+Next, hit the flash button and select the PocketMage from the list of USB devices. 
+
+Once the flashing is done, unplug your PocketMage and re-insert the battery. 
+
+PocketMage should boot up automatically!
 
 
 ###### **What SD card can I use?**
