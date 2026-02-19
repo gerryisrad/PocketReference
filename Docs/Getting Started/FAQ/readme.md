@@ -72,7 +72,7 @@ The video build guide can be found [here.](https://youtu.be/2aNcC0qCK1o?si=HKqUI
 
 ###### **Is there a guide on the key operations?**
 
-Yes! That guide can be found [here.](https://github.com/ashtf8/PocketMage_PDA/tree/main/Docs/Command%20Manual)
+Yes! That guide can be found [here.](https://github.com/ashtf8/PocketMage_PDA/tree/main/Docs/Getting%20Started/Command%20Manual)
 
 
 
