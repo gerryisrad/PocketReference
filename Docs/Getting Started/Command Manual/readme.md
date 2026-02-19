@@ -42,7 +42,7 @@ This is a guide on common key combinations and commands on the PocketMage PDA de
 ```
 [!] [@] [#] [$] [%] [^] [&] [*] [(] [)]
 [~] [`] [|] [[] []] [{] [}] [<] [>] [BKSP]
-[FN+TAB] [%] [_] [&] [+] [-] [\] [?] [,] [ENTER]
+[FN+TAB] [%] [=] [&] [+] [-] [\] [?] [,] [ENTER]
 [SHIFT] [FN] [SPACE] [FN+SHIFT+<] [FN+SHIFT+o] [FN+SHIFT+>]
 ```
 ---
