@@ -677,7 +677,7 @@ static void renderDocument(int startX, int startY) {
   }
 }
 
-// ── Entry points ──────────────────────────────────────────────────────────────
+// ── OTA App Entry Points ──────────────────────────────────────────────────────
 void APP_INIT() {
   initFonts();
   fileError    = false;
@@ -693,7 +693,12 @@ void APP_INIT() {
   s_browserSel    = 0;
   s_browserScroll = 0;
 
+  // Set default OLED text parameters
+  display.setTextColor(GxEPD_BLACK);
+  display.setTextWrap(false);
+  
   updateOLED();
+  EINK().forceSlowFullUpdate(true);
 }
 
 void processKB_APP() {
