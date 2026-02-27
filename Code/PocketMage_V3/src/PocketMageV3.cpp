@@ -154,6 +154,9 @@ void processKB() {
 // SETUP
 void setup() {
   PocketMage_INIT();
+  #if OTA_APP
+  APP_INIT(); // Initialize OTA app
+  #endif
 }
 
 // Keyboard / OLED Loop
