@@ -745,8 +745,12 @@ void APP_INIT() {
 }
 
 void processKB_APP() {
+  static uint32_t lastKbTime = 0;
+  if (millis() - lastKbTime < 150) return;
+
   char ch = KB().updateKeypress();
   if (!ch) return;
+  lastKbTime = millis();
 
   // ╔══════════════════════════════════════════════════════════════════════════╗
   // ║  UNIVERSAL EXIT — FN+CENTER (code 7) — works from ANY mode             ║
